@@ -1,0 +1,22 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Toggle notational-velocity'
+      'command': 'notational-velocity:toggle'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'notational-velocity'
+      'submenu': [
+        {
+          'label': 'Toggle'
+          'command': 'notational-velocity:toggle'
+        }
+      ]
+    ]
+  }
+]
