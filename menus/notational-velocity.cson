@@ -2,7 +2,7 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Toggle notational-velocity'
+      'label': 'Toggle Notational Velocity'
       'command': 'notational-velocity:toggle'
     }
   ]
@@ -10,7 +10,7 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'notational-velocity'
+      'label': 'Notational Velocity'
       'submenu': [
         {
           'label': 'Toggle'

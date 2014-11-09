@@ -1,43 +1,68 @@
-fs = require 'fs'
+path = require 'path'
+{$, $$, SelectListView} = require 'atom'
 
 module.exports =
-class NotationalVelocityView
-  constructor: (serializeState) ->
-    # Create root element
-    @element = document.createElement('div')
-    @element.classList.add('notational-velocity',  'overlay', 'from-top')
+class NotationalVelocityView extends SelectListView
+  initialize: ->
+    console.log 'initialize'
+    super
 
-    # Create message element
-    message = document.createElement('div')
-    message.textContent = "The NotationalVelocity package is Alive! It's ALIVE!"
-    message.classList.add('message')
-    @element.appendChild(message)
+    @addClass('from-top overlay')
+    @data = [
+      {
+        'title': 'car',
+        'content': 'Car: A car is a wheeled, self-powered motor vehicle used for transportation. Most definitions of the term specify that cars are designed to run primarily on roads, to have seating for one to eight people, to typically have four wheels, and to be constructed principally for the transport of people rather than goods.'
+      },
+      {
+        'title': 'bar',
+        'content': 'Bar: Bars provide stools or chairs that are placed at tables or counters for their patrons. Some bars have entertainment on a stage, such as a live band, comedians, go-go dancers, or strippers. Bars which offer entertainment or live music are often referred to as music bars or nightclubs.'
+      }
+    ]
+    @setItems(@data)
 
-    # Register command that toggles this view
-    atom.commands.add 'atom-workspace', 'notational-velocity:toggle': => @toggle()
+  getFilterKey: ->
+    'content'
 
-  # Returns an object that can be retrieved when package is activated
-  serialize: ->
-
-  # Tear down any state and detach
-  destroy: ->
-    @element.remove()
-
-  # Toggle the visibility of this view
   toggle: ->
-    console.log 'NotationalVelocityView was toggled!'
-
-    @readdir()
-
-    if @element.parentElement?
-      @element.remove()
+    console.log 'toggle'
+    if @hasParent()
+      @cancel()
     else
-      atom.workspaceView.append(@element)
+      @attach()
 
-  # read filenames in a specific directory
-  readdir: ->
-    fs.readdir '.', (error, filenames) =>
-      if error
-        throw error
-      for filename in filenames
-        console.log filename
+  viewForItem: (item) ->
+    console.log 'viewForItem #{item}'
+
+    element = document.createElement('li')
+    element.textContent = item.content
+    element
+
+  confirmed: (item) ->
+    console.log 'confirmed #{item}'
+
+  destroy: ->
+    console.log 'destroy'
+    @cancel()
+    @remove()
+
+  attach: ->
+    console.log 'attach'
+    @storeFocusedElement()
+    atom.workspaceView.append(this)
+    @focusFilterEditor()
+
+  cancel: ->
+    console.log 'cancel'
+    super
+
+  cancelled: ->
+    console.log 'cancelled'
+    super
+
+  setItems: (items=[]) ->
+    console.log 'setItems'
+    super(items)
+
+  populateList: ->
+    console.log 'populateList'
+    super
