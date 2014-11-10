@@ -1,4 +1,5 @@
 path = require 'path'
+fs = require 'fs'
 {$, $$, SelectListView} = require 'atom'
 
 module.exports =
@@ -7,21 +8,36 @@ class NotationalVelocityView extends SelectListView
     console.log 'initialize'
     super
 
-    @addClass('from-top overlay')
-    @data = [
-      {
-        'title': 'car',
-        'content': 'Car: A car is a wheeled, self-powered motor vehicle used for transportation. Most definitions of the term specify that cars are designed to run primarily on roads, to have seating for one to eight people, to typically have four wheels, and to be constructed principally for the transport of people rather than goods.'
-      },
-      {
-        'title': 'bar',
-        'content': 'Bar: Bars provide stools or chairs that are placed at tables or counters for their patrons. Some bars have entertainment on a stage, such as a live band, comedians, go-go dancers, or strippers. Bars which offer entertainment or live music are often referred to as music bars or nightclubs.'
+    @addClass('notational-velocity from-top overlay')
+    @loadData()
+
+  loadData: ->
+    @data = []
+
+    # TODO: remove this temporary hard-coded path
+    directory = '/Users/seongjae/github/notational-velocity/testdata'
+
+    for filename in fs.readdirSync(directory)
+      filepath = path.join(directory, filename)
+      filetext = fs.readFileSync(filepath, 'utf8')
+
+      title = ''
+      result = filetext.match(/^#\s.+/)
+      if result != null
+        title = result[0].slice(2, result[0].length)
+
+      item = {
+        'title': title,
+        'filetext': filetext,
+        'filename': filename,
+        'filepath': filepath
       }
-    ]
+      @data.push(item)
+
     @setItems(@data)
 
   getFilterKey: ->
-    'content'
+    'filetext'
 
   toggle: ->
     console.log 'toggle'
@@ -33,12 +49,17 @@ class NotationalVelocityView extends SelectListView
   viewForItem: (item) ->
     console.log 'viewForItem #{item}'
 
-    element = document.createElement('li')
-    element.textContent = item.content
-    element
+    index = item.filetext.search /\n/
+    content = item.filetext.slice(index, item.filetext.length)
+
+    $$ ->
+      @li class: 'two-lines', =>
+        @div "#{item.title}", class: 'primary-line'
+        @div "#{content}", class: 'secondary-line'
 
   confirmed: (item) ->
     console.log 'confirmed #{item}'
+    atom.workspaceView.open(item.filepath)
 
   destroy: ->
     console.log 'destroy'
@@ -66,3 +87,9 @@ class NotationalVelocityView extends SelectListView
   populateList: ->
     console.log 'populateList'
     super
+
+  selectItemView: (view) ->
+    console.log 'selectItemView'
+    super(view)
+    return unless view.length
+    console.log @list.indexOf(@list.find('.selected'))
