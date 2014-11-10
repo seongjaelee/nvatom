@@ -14,8 +14,8 @@ class NotationalVelocityView extends SelectListView
   loadData: ->
     @data = []
 
-    # TODO: remove this temporary hard-coded path
-    directory = '/Users/seongjae/github/notational-velocity/testdata'
+    # directory = '/Users/seongjae/github/notational-velocity/testdata'
+    directory = atom.config.get('notational-velocity.directory')
 
     for filename in fs.readdirSync(directory)
       filepath = path.join(directory, filename)
@@ -58,38 +58,38 @@ class NotationalVelocityView extends SelectListView
         @div "#{content}", class: 'secondary-line'
 
   confirmed: (item) ->
-    console.log 'confirmed #{item}'
+    # console.log 'confirmed #{item}'
     atom.workspaceView.open(item.filepath)
 
   destroy: ->
-    console.log 'destroy'
+    # console.log 'destroy'
     @cancel()
     @remove()
 
   attach: ->
-    console.log 'attach'
+    # console.log 'attach'
     @storeFocusedElement()
     atom.workspaceView.append(this)
     @focusFilterEditor()
 
-  cancel: ->
-    console.log 'cancel'
-    super
+  # cancel: ->
+  #   console.log 'cancel'
+  #   super
 
-  cancelled: ->
-    console.log 'cancelled'
-    super
+  # cancelled: ->
+  #   console.log 'cancelled'
+  #   super
 
-  setItems: (items=[]) ->
-    console.log 'setItems'
-    super(items)
+  # setItems: (items=[]) ->
+  #   console.log 'setItems'
+  #   super(items)
 
-  populateList: ->
-    console.log 'populateList'
-    super
+  # populateList: ->
+  #   console.log 'populateList'
+  #   super
 
-  selectItemView: (view) ->
-    console.log 'selectItemView'
-    super(view)
-    return unless view.length
-    console.log @list.indexOf(@list.find('.selected'))
+  # selectItemView: (view) ->
+  #   console.log 'selectItemView'
+  #   super(view)
+  #   return unless view.length
+  #   console.log @list.indexOf(@list.find('.selected'))

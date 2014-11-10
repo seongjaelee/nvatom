@@ -1,4 +1,7 @@
 module.exports =
+  configDefaults:
+    directory: '/'
+
   notationalVelocityView: null
 
   activate: (state) ->
