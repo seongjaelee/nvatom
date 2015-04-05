@@ -1,3 +1,5 @@
+{CompositeDisposable} = require 'atom'
+
 module.exports =
   configDefaults:
     directory: '/'
@@ -5,10 +7,16 @@ module.exports =
   notationalVelocityView: null
 
   activate: (state) ->
-    atom.workspaceView.command 'notational-velocity:toggle', =>
-      @createView(state).toggle()
+    # Events subscribed to in atom's system can be easily cleaned up with a
+    # CompositeDisposable
+    @subscriptions = new CompositeDisposable
+
+    # Register command that toggles this view
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'notational-velocity:toggle': => @createView(state).toggle()
 
   deactivate: ->
+    @subscriptions.dispose()
     @notationalVelocityView.destroy()
 
   serialize: ->

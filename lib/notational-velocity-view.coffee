@@ -1,14 +1,12 @@
 path = require 'path'
 fs = require 'fs'
 fsPlus = require 'fs-plus'
-{$, $$, SelectListView} = require 'atom'
+{$, $$, SelectListView} = require 'atom-space-pen-views'
 
 module.exports =
 class NotationalVelocityView extends SelectListView
   initialize: ->
-    console.log 'initialize'
     super
-
     @addClass('notational-velocity from-top overlay')
     @loadData()
 
@@ -42,7 +40,6 @@ class NotationalVelocityView extends SelectListView
   loadData: ->
     @data = []
 
-    # directory = '/Users/seongjae/github/notational-velocity/testdata'
     directory = atom.config.get('notational-velocity.directory')
 
     for filename in fs.readdirSync(directory)
@@ -72,10 +69,11 @@ class NotationalVelocityView extends SelectListView
 
   toggle: ->
     console.log 'toggle'
-    if @hasParent()
-      @cancel()
+    if @panel?.isVisible()
+      @hide()
     else
-      @attach()
+      @populateList()
+      @show()
 
   viewForItem: (item) ->
     console.log 'viewForItem #{item}'
@@ -89,41 +87,27 @@ class NotationalVelocityView extends SelectListView
         @div "#{content}", class: 'secondary-line'
 
   confirmed: (item) ->
-    # console.log 'confirmed #{item}'
-    atom.workspaceView.open(item.filepath)
+    console.log 'confirmed #{item}'
+    atom.workspace.open(item.filepath)
+    @cancel()
 
   destroy: ->
-    # console.log 'destroy'
+    console.log 'destroy'
     @cancel()
-    @remove()
+    @panel?.destroy()
 
-  attach: ->
-    # console.log 'attach'
+  show: ->
+    console.log 'show'
     @storeFocusedElement()
-    atom.workspaceView.append(this)
+    @panel ?= atom.workspace.addModalPanel(item: this)
+    @panel.show()
     @focusFilterEditor()
 
-  # cancel: ->
-  #   console.log 'cancel'
-  #   super
+  cancelled: ->
+    @hide()
 
-  # cancelled: ->
-  #   console.log 'cancelled'
-  #   super
-
-  # setItems: (items=[]) ->
-  #   console.log 'setItems'
-  #   super(items)
-
-  # populateList: ->
-  #   console.log 'populateList'
-  #   super
-
-  # selectItemView: (view) ->
-  #   console.log 'selectItemView'
-  #   super(view)
-  #   return unless view.length
-  #   console.log @list.indexOf(@list.find('.selected'))
+  hide: ->
+    @panel?.hide()
 
   populateList: ->
     console.log 'populateList'
