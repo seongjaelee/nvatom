@@ -21,16 +21,24 @@ class NotationalVelocityView extends SelectListView
     for item,i in @items
       perfs.push({score: 1, index: i})
 
+    # The most recent one comes to the top.
     for query in queries
       for perf in perfs
-        result = @items[perf.index].filetext.match(query)
-        if result == null
+        if @items[perf.index].filetext.match(query) != null || @items[perf.index].title.match(query) != null
+          perf.score = @items[perf.index].modified
+        else
           perf.score = 0
-          continue
-        perf.score *= result.length
-        result = @items[perf.index].title.match(query)
-        if result != null
-          perf.score *= 10
+
+        # This snippet implements a manual relevance metric.
+        # result = @items[perf.index].filetext.match(query)
+        # if result == null
+        #   perf.score = 0
+        #   continue
+        # perf.score *= result.length
+        # result = @items[perf.index].title.match(query)
+        # if result != null
+        #   perf.score *= 10
+
       perfs = perfs.filter (x) -> x.score > 0
 
     perfs.sort (a, b) -> if a.score > b.score then -1 else 1
@@ -43,11 +51,12 @@ class NotationalVelocityView extends SelectListView
     directory = atom.config.get('notational-velocity.directory')
 
     for filename in fs.readdirSync(directory)
-      filepath = path.join(directory, filename)
       if !fsPlus.isMarkdownExtension(path.extname(filename))
         continue
 
+      filepath = path.join(directory, filename)
       filetext = fs.readFileSync(filepath, 'utf8')
+      modified = fs.statSync(filepath).mtime
 
       title = ''
       result = filetext.match(/^#\s.+/)
@@ -56,6 +65,7 @@ class NotationalVelocityView extends SelectListView
 
       item = {
         'title': title,
+        'modified': modified,
         'filetext': filetext,
         'filename': filename,
         'filepath': filepath
@@ -83,8 +93,10 @@ class NotationalVelocityView extends SelectListView
 
     $$ ->
       @li class: 'two-lines', =>
-        @div "#{item.title}", class: 'primary-line'
-        @div "#{content}", class: 'secondary-line'
+        @div class: 'primary-line', =>
+          @span "#{item.title}"
+          @div class: 'metadata', "#{item.modified.toLocaleDateString()}"
+        @div class: 'secondary-line', "#{content}"
 
   confirmed: (item) ->
     console.log 'confirmed #{item}'
