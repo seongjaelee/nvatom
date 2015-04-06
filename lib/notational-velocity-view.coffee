@@ -10,40 +10,30 @@ class NotationalVelocityView extends SelectListView
     @addClass('notational-velocity from-top overlay')
     @loadData()
 
+  selectItem: (filterQuery) ->
+    if filterQuery.length == 0
+      return null
+
+    titleQuery = filterQuery.toLowerCase()
+    titleItems = @items
+      .filter (x) -> x.title.toLowerCase()[...titleQuery.length] is titleQuery
+      .sort (x, y) -> x.modified > y.modified
+    titleItem = if titleItems.length > 0 then titleItems[0] else null
+    return titleItem
+
   filter: (filterQuery) ->
-    queries = []
+    if filterQuery.length == 0
+      return @items
 
-    for queryStr in filterQuery.split(' ')
-      if queryStr.length
-        queries.push(new RegExp(queryStr, 'gim'))
-
-    perfs = []
-    for item,i in @items
-      perfs.push({score: 1, index: i})
-
-    # The most recent one comes to the top.
-    for query in queries
-      for perf in perfs
-        if @items[perf.index].filetext.match(query) != null || @items[perf.index].title.match(query) != null
-          perf.score = @items[perf.index].modified
-        else
-          perf.score = 0
-
-        # This snippet implements a manual relevance metric.
-        # result = @items[perf.index].filetext.match(query)
-        # if result == null
-        #   perf.score = 0
-        #   continue
-        # perf.score *= result.length
-        # result = @items[perf.index].title.match(query)
-        # if result != null
-        #   perf.score *= 10
-
-      perfs = perfs.filter (x) -> x.score > 0
-
-    perfs.sort (a, b) -> if a.score > b.score then -1 else 1
-
-    return (@items[p.index] for p in perfs)
+    queries = filterQuery.split(' ')
+      .filter (x) -> x.length > 0
+      .map (x) -> new RegExp(x, 'gi')
+    contentItems = @items
+      .filter (x) ->
+        queries
+          .map (q) -> q.test(x.filetext) || q.test(x.test)
+          .reduce (x, y) -> x && y
+    return contentItems
 
   loadData: ->
     @data = []
@@ -98,6 +88,17 @@ class NotationalVelocityView extends SelectListView
           @div class: 'metadata', "#{item.modified.toLocaleDateString()}"
         @div class: 'secondary-line', "#{content}"
 
+  confirmSelection: ->
+    item = @getSelectedItem()
+    if item?
+      @confirmed(item)
+    else
+      query = @getFilterQuery()
+      if query?
+        # TODO(seongjae): It should create a new document.
+        console.log(query)
+      @cancel()
+
   confirmed: (item) ->
     console.log 'confirmed #{item}'
     atom.workspace.open(item.filepath)
@@ -126,11 +127,8 @@ class NotationalVelocityView extends SelectListView
     return unless @items?
 
     filterQuery = @getFilterQuery()
-    if filterQuery.length
-      filteredItems = @filter(filterQuery)
-      #filteredItems = fuzzyFilter(@items, filterQuery, key: @getFilterKey())
-    else
-      filteredItems = @items
+    filteredItems = @filter(filterQuery)
+    selectedItem = @selectItem(filterQuery)
 
     @list.empty()
     if filteredItems.length
@@ -142,6 +140,9 @@ class NotationalVelocityView extends SelectListView
         itemView.data('select-list-item', item)
         @list.append(itemView)
 
-      @selectItemView(@list.find('li:first'))
+      if selectedItem
+        n = filteredItems.indexOf(selectedItem) + 1
+        @selectItemView(@list.find("li:nth-child(#{n})"))
+
     else
       @setError(@getEmptyMessage(@items.length, filteredItems.length))
