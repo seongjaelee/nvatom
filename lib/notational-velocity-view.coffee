@@ -14,12 +14,21 @@ class NotationalVelocityView extends SelectListView
     if filterQuery.length == 0
       return null
 
-    titleQuery = filterQuery.toLowerCase()
-    titleItems = @items
-      .filter (x) -> x.title.toLowerCase()[...titleQuery.length] is titleQuery
-      .sort (x, y) -> x.modified > y.modified
-    titleItem = if titleItems.length > 0 then titleItems[0] else null
-    return titleItem
+    titlePatterns = [
+      ///^#{filterQuery}$///i,
+      ///^#{filterQuery}///i,
+      ///(\s|\\|\/)#{filterQuery}///i,
+    ]
+
+    for titlePattern in titlePatterns
+      titleItems = @items
+        .filter (x) -> x.title.match(titlePattern) != null
+        .sort (x, y) -> if x.modified.getTime() <= y.modified.getTime() then 1 else -1
+      titleItem = if titleItems.length > 0 then titleItems[0] else null
+      if titleItem != null
+        return titleItem
+
+    return null
 
   filter: (filterQuery) ->
     if filterQuery.length == 0
@@ -31,36 +40,46 @@ class NotationalVelocityView extends SelectListView
     contentItems = @items
       .filter (x) ->
         queries
-          .map (q) -> q.test(x.filetext) || q.test(x.test)
+          .map (q) -> q.test(x.filetext) || q.test(x.title)
           .reduce (x, y) -> x && y
     return contentItems
+
+  getSubPath: (baseDir, dir)->
+    ret = []
+    fullDir = path.join(baseDir, dir)
+    for filename in fs.readdirSync(fullDir)
+      filePath = path.join(dir, filename)
+      fullPath = path.join(baseDir, filePath)
+      if fs.statSync(fullPath).isDirectory()
+        ret = ret.concat(@getSubPath(baseDir, filePath))
+      else
+        if !fsPlus.isMarkdownExtension(path.extname(filename))
+          continue
+        ret.push(filePath)
+    return ret
 
   loadData: ->
     @data = []
 
-    directory = atom.config.get('notational-velocity.directory')
+    basedir = atom.config.get('notational-velocity.directory')
 
-    for filename in fs.readdirSync(directory)
-      if !fsPlus.isMarkdownExtension(path.extname(filename))
-        continue
-
-      filepath = path.join(directory, filename)
-      filetext = fs.readFileSync(filepath, 'utf8')
-      modified = fs.statSync(filepath).mtime
-
-      title = ''
-      result = filetext.match(/^#\s.+/)
-      if result != null
-        title = result[0].slice(2, result[0].length)
+    for filepath in @getSubPath(basedir, '')
+      fullpath = path.join(basedir, filepath)
+      filename = path.basename(filepath, path.extname(filepath))
+      filetext = fs.readFileSync(fullpath, 'utf8')
+      title = path.join(path.dirname(filepath), filename)
+      modified = fs.statSync(fullpath).mtime
 
       item = {
         'title': title,
         'modified': modified,
         'filetext': filetext,
         'filename': filename,
-        'filepath': filepath
+        'filepath': fullpath
       }
       @data.push(item)
+
+    @data = @data.sort (x, y) -> if x.modified.getTime() <= y.modified.getTime() then 1 else -1
 
     @setItems(@data)
 
@@ -68,7 +87,6 @@ class NotationalVelocityView extends SelectListView
     'filetext'
 
   toggle: ->
-    console.log 'toggle'
     if @panel?.isVisible()
       @hide()
     else
@@ -76,8 +94,6 @@ class NotationalVelocityView extends SelectListView
       @show()
 
   viewForItem: (item) ->
-    console.log 'viewForItem #{item}'
-
     index = item.filetext.search /\n/
     content = item.filetext.slice(index, item.filetext.length)
 
@@ -94,23 +110,17 @@ class NotationalVelocityView extends SelectListView
       @confirmed(item)
     else
       query = @getFilterQuery()
-      if query?
-        # TODO(seongjae): It should create a new document.
-        console.log(query)
       @cancel()
 
   confirmed: (item) ->
-    console.log 'confirmed #{item}'
     atom.workspace.open(item.filepath)
     @cancel()
 
   destroy: ->
-    console.log 'destroy'
     @cancel()
     @panel?.destroy()
 
   show: ->
-    console.log 'show'
     @storeFocusedElement()
     @panel ?= atom.workspace.addModalPanel(item: this)
     @panel.show()
@@ -123,7 +133,6 @@ class NotationalVelocityView extends SelectListView
     @panel?.hide()
 
   populateList: ->
-    console.log 'populateList'
     return unless @items?
 
     filterQuery = @getFilterQuery()
