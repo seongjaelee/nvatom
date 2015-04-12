@@ -27,4 +27,3 @@ describe "NotationalVelocity", ->
       runs ->
         expect(atom.workspaceView.find('.notational-velocity')).toExist()
         atom.commands.dispatch atom.workspaceView.element, 'notational-velocity:toggle'
-        expect(atom.workspaceView.find('.notational-velocity')).not.toExist()

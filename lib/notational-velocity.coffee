@@ -2,7 +2,7 @@
 
 module.exports =
   configDefaults:
-    directory: '/'
+    directory: 'testdata'
 
   notationalVelocityView: null
 
