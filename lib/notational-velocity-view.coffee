@@ -60,10 +60,19 @@ class NotationalVelocityView extends SelectListView
   getSubPath: (baseDir, dir)->
     ret = []
     fullDir = path.join(baseDir, dir)
-    for filename in fs.readdirSync(fullDir)
+    try
+      filenameList = fs.readdirSync(fullDir)
+    catch e
+      return ret
+
+    for filename in filenameList
       filePath = path.join(dir, filename)
       fullPath = path.join(baseDir, filePath)
-      if fs.statSync(fullPath).isDirectory()
+      try
+        fileStat = fs.statSync(fullPath)
+      catch e
+        continue
+      if fileStat.isDirectory()
         ret = ret.concat(@getSubPath(baseDir, filePath))
       else
         if !fsPlus.isMarkdownExtension(path.extname(filename))
