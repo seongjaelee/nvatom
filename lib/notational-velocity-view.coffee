@@ -9,26 +9,39 @@ class NotationalVelocityView extends SelectListView
     super
     @addClass('notational-velocity from-top overlay')
     @loadData()
+    @prevFilterQuery = ''
+    @prevCursorPosition = 0
 
   selectItem: (filterQuery) ->
     if filterQuery.length == 0
+      @prevCursorPosition = 0
       return null
 
     titlePatterns = [
       ///^#{filterQuery}$///i,
       ///^#{filterQuery}///i,
-      ///(\s|\\|\/)#{filterQuery}///i,
     ]
 
+    titleItem = null
     for titlePattern in titlePatterns
       titleItems = @items
         .filter (x) -> x.title.match(titlePattern) != null
         .sort (x, y) -> if x.modified.getTime() <= y.modified.getTime() then 1 else -1
       titleItem = if titleItems.length > 0 then titleItems[0] else null
       if titleItem != null
-        return titleItem
+        break
 
-    return null
+    # If title item is not null, auto-fill the search panel.
+    # But we don't want to fill it when deleting.
+    editor = @filterEditorView.model
+    currCursorPosition = editor.getCursorBufferPosition().column
+    if titleItem != null && @prevCursorPosition < currCursorPosition
+      @prevFilterQuery = titleItem.title
+      editor.setText(titleItem.title)
+      editor.selectLeft(titleItem.title.length - filterQuery.length)
+    @prevCursorPosition = currCursorPosition
+
+    return titleItem
 
   filter: (filterQuery) ->
     if filterQuery.length == 0
@@ -155,3 +168,10 @@ class NotationalVelocityView extends SelectListView
 
     else
       @setError(@getEmptyMessage(@items.length, filteredItems.length))
+
+  schedulePopulateList: ->
+    # We can skip it when we are just moving the position of the cursor.
+    currFilterQuery = @getFilterQuery()
+    if @prevFilterQuery != currFilterQuery
+      super
+    @prevFilterQuery = currFilterQuery
