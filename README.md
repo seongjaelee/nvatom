@@ -1,5 +1,7 @@
 # Notational Velocity for Atom
 
+[![Build Status](https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master)](https://travis-ci.org/seongjaelee/notational-velocity)
+
 [Notational Velocity][1] is an application that stores and retrieves notes. This Atom package implements the some key features from this amazing app:
 
 - Modeless operation
