@@ -1,8 +1,10 @@
 {CompositeDisposable} = require 'atom'
 
 module.exports =
-  configDefaults:
-    directory: 'testdata'
+  config:
+    directory:
+      type: 'string'
+      default: 'testdata'
 
   notationalVelocityView: null
 
