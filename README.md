@@ -12,7 +12,7 @@ Integrated with Atom, we have many advantages:
 
 - __Use Atom's Features__ - Such as Syntax Highlighting and Tree View.
 - __Use Other Packages__ - Such as Markdown Preview and Minimap.
-- __Multi-OS__ - You can use it in Linux and Windows.
+- __Multi-OS__ - You can use it in OSX, Linux and Windows.
 
 We do believe Notational Velocity is the precursor of the famous note-taking app Evernote. Advantages over Evernote are:
 
