@@ -13,6 +13,13 @@
   },
   "dependencies": {
     "fs-plus": "2.x",
-    "atom-space-pen-views": "^2.0.3"
+    "atom-space-pen-views": "^2.0.3",
+    "pathwatcher": "^4.2"
+  },
+  "devDependencies": {
+    "fs-plus": "2.x",
+    "atom-space-pen-views": "^2.0.3",
+    "pathwatcher": "^4.2",
+    "temp": "~0.7.0"
   }
 }

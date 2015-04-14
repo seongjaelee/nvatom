@@ -1,16 +1,21 @@
-path = require 'path'
-fs = require 'fs'
-fsPlus = require 'fs-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
+NoteDirectory = require './note-directory'
+Note = require './note'
 
 module.exports =
 class NotationalVelocityView extends SelectListView
   initialize: ->
     super
     @addClass('notational-velocity from-top overlay')
-    @loadData()
+    rootDirectory = atom.config.get('notational-velocity.directory')
+    @noteDirectory = new NoteDirectory(rootDirectory, null, () => @updateNotes())
+    @updateNotes()
     @prevFilterQuery = ''
     @prevCursorPosition = 0
+
+  updateNotes: () ->
+    @notes = @noteDirectory.getNotes()
+    @setItems(@notes)
 
   selectItem: (filterQuery) ->
     if filterQuery.length == 0
@@ -24,9 +29,8 @@ class NotationalVelocityView extends SelectListView
 
     titleItem = null
     for titlePattern in titlePatterns
-      titleItems = @items
-        .filter (x) -> x.title.match(titlePattern) != null
-        .sort (x, y) -> if x.modified.getTime() <= y.modified.getTime() then 1 else -1
+      titleItems = @notes
+        .filter (x) -> x.getTitle().match(titlePattern) != null
       titleItem = if titleItems.length > 0 then titleItems[0] else null
       if titleItem != null
         break
@@ -36,74 +40,25 @@ class NotationalVelocityView extends SelectListView
     editor = @filterEditorView.model
     currCursorPosition = editor.getCursorBufferPosition().column
     if titleItem != null && @prevCursorPosition < currCursorPosition
-      @prevFilterQuery = titleItem.title
-      editor.setText(titleItem.title)
-      editor.selectLeft(titleItem.title.length - filterQuery.length)
+      @prevFilterQuery = titleItem.getTitle()
+      editor.setText(titleItem.getTitle())
+      editor.selectLeft(titleItem.getTitle().length - filterQuery.length)
     @prevCursorPosition = currCursorPosition
 
     return titleItem
 
   filter: (filterQuery) ->
     if filterQuery.length == 0
-      return @items
+      return @notes
 
     queries = filterQuery.split(' ')
       .filter (x) -> x.length > 0
       .map (x) -> new RegExp(x, 'gi')
-    contentItems = @items
+    return @notes
       .filter (x) ->
         queries
-          .map (q) -> q.test(x.filetext) || q.test(x.title)
+          .map (q) -> q.test(x.getText()) || q.test(x.getTitle())
           .reduce (x, y) -> x && y
-    return contentItems
-
-  getSubPath: (baseDir, dir)->
-    ret = []
-    fullDir = path.join(baseDir, dir)
-    try
-      filenameList = fs.readdirSync(fullDir)
-    catch e
-      return ret
-
-    for filename in filenameList
-      filePath = path.join(dir, filename)
-      fullPath = path.join(baseDir, filePath)
-      try
-        fileStat = fs.statSync(fullPath)
-      catch e
-        continue
-      if fileStat.isDirectory()
-        ret = ret.concat(@getSubPath(baseDir, filePath))
-      else
-        if !fsPlus.isMarkdownExtension(path.extname(filename))
-          continue
-        ret.push(filePath)
-    return ret
-
-  loadData: ->
-    @data = []
-
-    basedir = atom.config.get('notational-velocity.directory')
-
-    for filepath in @getSubPath(basedir, '')
-      fullpath = path.join(basedir, filepath)
-      filename = path.basename(filepath, path.extname(filepath))
-      filetext = fs.readFileSync(fullpath, 'utf8')
-      title = path.join(path.dirname(filepath), filename)
-      modified = fs.statSync(fullpath).mtime
-
-      item = {
-        'title': title,
-        'modified': modified,
-        'filetext': filetext,
-        'filename': filename,
-        'filepath': fullpath
-      }
-      @data.push(item)
-
-    @data = @data.sort (x, y) -> if x.modified.getTime() <= y.modified.getTime() then 1 else -1
-
-    @setItems(@data)
 
   getFilterKey: ->
     'filetext'
@@ -116,14 +71,13 @@ class NotationalVelocityView extends SelectListView
       @show()
 
   viewForItem: (item) ->
-    index = item.filetext.search /\n/
-    content = item.filetext.slice(index, item.filetext.length)
+    content = item.getText()[0...100]
 
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
-          @span "#{item.title}"
-          @div class: 'metadata', "#{item.modified.toLocaleDateString()}"
+          @span "#{item.getTitle()}"
+          @div class: 'metadata', "#{item.getModified().toLocaleDateString()}"
         @div class: 'secondary-line', "#{content}"
 
   confirmSelection: ->
@@ -135,7 +89,7 @@ class NotationalVelocityView extends SelectListView
       @cancel()
 
   confirmed: (item) ->
-    atom.workspace.open(item.filepath)
+    atom.workspace.open(item.getFilePath())
     @cancel()
 
   destroy: ->
@@ -155,7 +109,7 @@ class NotationalVelocityView extends SelectListView
     @panel?.hide()
 
   populateList: ->
-    return unless @items?
+    return unless @notes?
 
     filterQuery = @getFilterQuery()
     filteredItems = @filter(filterQuery)
@@ -176,7 +130,7 @@ class NotationalVelocityView extends SelectListView
         @selectItemView(@list.find("li:nth-child(#{n})"))
 
     else
-      @setError(@getEmptyMessage(@items.length, filteredItems.length))
+      @setError(@getEmptyMessage(@notes.length, filteredItems.length))
 
   schedulePopulateList: ->
     # We can skip it when we are just moving the position of the cursor.
