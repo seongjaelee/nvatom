@@ -1,3 +1,5 @@
+path = require 'path'
+fs = require 'fs-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
 NoteDirectory = require './note-directory'
 Note = require './note'
@@ -7,8 +9,8 @@ class NotationalVelocityView extends SelectListView
   initialize: ->
     super
     @addClass('notational-velocity from-top overlay')
-    rootDirectory = atom.config.get('notational-velocity.directory')
-    @noteDirectory = new NoteDirectory(rootDirectory, null, () => @updateNotes())
+    @rootDirectory = atom.config.get('notational-velocity.directory')
+    @noteDirectory = new NoteDirectory(@rootDirectory, null, () => @updateNotes())
     @updateNotes()
     @prevFilterQuery = ''
     @prevCursorPosition = 0
@@ -83,14 +85,14 @@ class NotationalVelocityView extends SelectListView
   confirmSelection: ->
     item = @getSelectedItem()
     if item?
-      @confirmed(item)
-    else
-      query = @getFilterQuery()
+      atom.workspace.open(item.getFilePath())
       @cancel()
-
-  confirmed: (item) ->
-    atom.workspace.open(item.getFilePath())
-    @cancel()
+    else
+      sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
+      filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
+      fs.writeFileSync(filePath, '')
+      atom.workspace.open(filePath)
+      @cancel()
 
   destroy: ->
     @cancel()
