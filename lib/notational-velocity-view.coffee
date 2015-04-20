@@ -89,9 +89,10 @@ class NotationalVelocityView extends SelectListView
       @cancel()
     else
       sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
-      filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
-      fs.writeFileSync(filePath, '')
-      atom.workspace.open(filePath)
+      if sanitizedQuery.length > 0
+        filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
+        fs.writeFileSync(filePath, '')
+        atom.workspace.open(filePath)
       @cancel()
 
   destroy: ->
