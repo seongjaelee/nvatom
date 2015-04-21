@@ -7,11 +7,16 @@ NotationalVelocity = require '../lib/notational-velocity'
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
 describe "NotationalVelocity", ->
+  defaultDirectory = atom.config.get('notational-velocity.directory')
   activationPromise = null
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('notational-velocity')
+    atom.config.set('notational-velocity.directory', 'testdata')
+
+  afterEach ->
+    atom.config.set('notational-velocity.directory', defaultDirectory)
 
   describe "when the notational-velocity:toggle event is triggered", ->
     it "attaches and then detaches the view", ->
