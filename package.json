@@ -1,7 +1,11 @@
 {
   "name": "notational-velocity",
   "main": "./lib/notational-velocity",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "private": true,
+  "contributors": [
+    "Seongjae Lee <seongjaelee@gmail.com>"
+  ],
   "description": "Notational Velocity for Atom",
   "activationCommands": {
     "atom-workspace": "notational-velocity:toggle"
@@ -11,6 +15,10 @@
   "engines": {
     "atom": ">0.50.0"
   },
+  "bugs": {
+    "url": "https://github.com/seongjaelee/notational-velocity/issues"
+  },
+  "homepage": "https://github.com/seongjaelee/notational-velocity",
   "dependencies": {
     "fs-plus": "2.x",
     "atom-space-pen-views": "^2.0.3",

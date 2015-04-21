@@ -2,7 +2,11 @@
 
 [![Build Status][3]][4]
 
-[Notational Velocity][1] is an application that stores and retrieves notes. This Atom package implements the some key features from this amazing app:
+[Notational Velocity][1] is an application that stores and retrieves notes.
+
+![Preview][5]
+
+This Atom package implements the some key features from this amazing app:
 
 - Modeless operation
 - Mouseless interaction
@@ -41,3 +45,4 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 [2]: http://daringfireball.net/projects/markdown/syntax
 [3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master
 [4]: https://travis-ci.org/seongjaelee/notational-velocity
+[5]: https://cloud.githubusercontent.com/assets/948301/7246990/2e2b4c6e-e7b9-11e4-93b0-57954e011e81.gif
