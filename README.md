@@ -1,6 +1,6 @@
 # Notational Velocity for Atom
 
-![Build Status][3]
+![[Build Status][3]][4]
 
 [Notational Velocity][1] is an application that stores and retrieves notes. This Atom package implements the some key features from this amazing app:
 
@@ -39,4 +39,5 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 [1]: http://notational.net/
 [2]: http://daringfireball.net/projects/markdown/syntax
-[3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master)](https://travis-ci.org/seongjaelee/notational-velocity
+[3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master
+[4]: https://travis-ci.org/seongjaelee/notational-velocity
