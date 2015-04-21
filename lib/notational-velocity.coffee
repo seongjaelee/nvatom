@@ -3,8 +3,10 @@
 module.exports =
   config:
     directory:
+      title: 'Note Directory'
+      description: 'The directory to archive notes'
       type: 'string'
-      default: 'testdata'
+      default: process.env.ATOM_HOME + '/packages/notational-velocity/notebook'
 
   notationalVelocityView: null
 

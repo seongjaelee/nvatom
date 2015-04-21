@@ -2,11 +2,11 @@
   "name": "notational-velocity",
   "main": "./lib/notational-velocity",
   "version": "0.0.0",
-  "description": "A short description of your package",
+  "description": "Notational Velocity for Atom",
   "activationCommands": {
     "atom-workspace": "notational-velocity:toggle"
   },
-  "repository": "https://github.com/atom/notational-velocity",
+  "repository": "https://github.com/seongjaelee/notational-velocity",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

@@ -1,6 +1,6 @@
 # Notational Velocity for Atom
 
-[![Build Status](https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master)](https://travis-ci.org/seongjaelee/notational-velocity)
+![Build Status][3]
 
 [Notational Velocity][1] is an application that stores and retrieves notes. This Atom package implements the some key features from this amazing app:
 
@@ -8,7 +8,7 @@
 - Mouseless interaction
 - Incremental Search
 
-Integrated with Atom, we have many advantages:
+Integrated with Atom, we have several advantages:
 
 - __Use Atom's Features__ - Such as Syntax Highlighting and Tree View.
 - __Use Other Packages__ - Such as Markdown Preview and Minimap.
@@ -18,15 +18,15 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 - __Open Source__
 - __No Rich Text__ - Instead, we strongly recommend to use [Markdown][2].
-- __No Cloud Sync__ - You pick whichever syncing method you prefer.
+- __Sync Whereever You Want__ - You can save notes locally, in Dropbox, or in Google Drive.
 
 ## Settings
 
-- `Directory`: The directory of archiving markdown files.
+- `Note Directory`: The directory to archive notes.
 
 ## Key Bindings
 
-- `ctrl-alt-o`: Toggles the search view.
+- `alt-cmd-l`: Toggles the search view.
 
 ## References
 
@@ -39,3 +39,4 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 [1]: http://notational.net/
 [2]: http://daringfireball.net/projects/markdown/syntax
+[3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master)](https://travis-ci.org/seongjaelee/notational-velocity
