@@ -1,6 +1,6 @@
 # Notational Velocity for Atom
 
-![[Build Status][3]][4]
+[![Build Status][3]][4]
 
 [Notational Velocity][1] is an application that stores and retrieves notes. This Atom package implements the some key features from this amazing app:
 
