@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
+_ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
 NoteDirectory = require './note-directory'
 Note = require './note'
@@ -98,11 +99,14 @@ class NotationalVelocityView extends SelectListView
 
     if filePath
       atom.workspace.open(filePath).then (editor) ->
+        save = ->
+          atom.packages.deactivatePackage 'whitespace'
+          console.log 'save'
+          editor.save()
+          atom.packages.activatePackage 'whitespace'
+        debouncedSave = _.debounce save, 1000
         editor.onDidStopChanging () ->
-          if editor.isModified()
-            atom.packages.deactivatePackage("whitespace");
-            editor.save()
-            atom.packages.activatePackage("whitespace");
+          debouncedSave() if editor.isModified()
 
     @cancel()
 
