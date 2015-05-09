@@ -32,6 +32,15 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 - `alt-cmd-l`: Toggles the search view.
 
+You can also override `cmd-l` if you want to keep your muscle memory from Notational Velocity and nvALT. Just edit your keymap (Atom menu -> Open Your Keymap) and add the following lines:
+
+```cson
+'atom-text-editor':
+  'cmd-l': 'unset!'
+'atom-workspace':
+  'cmd-l': 'notational-velocity:toggle'
+```
+
 ## References
 
 - [Notational Velocity](http://notational.net/)
