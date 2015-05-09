@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "contributors": [
-    "Seongjae Lee <seongjaelee@gmail.com>"
+    "Seongjae Lee <seongjae@gmail.com>"
   ],
   "description": "Notational Velocity for Atom",
   "activationCommands": {
