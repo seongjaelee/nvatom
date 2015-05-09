@@ -101,7 +101,6 @@ class NotationalVelocityView extends SelectListView
       atom.workspace.open(filePath).then (editor) ->
         save = ->
           atom.packages.deactivatePackage 'whitespace'
-          console.log 'save'
           editor.save()
           atom.packages.activatePackage 'whitespace'
         debouncedSave = _.debounce save, 1000
