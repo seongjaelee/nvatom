@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
+_ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
 NoteDirectory = require './note-directory'
 Note = require './note'
@@ -87,16 +88,26 @@ class NotationalVelocityView extends SelectListView
 
   confirmSelection: ->
     item = @getSelectedItem()
+    filePath = null
     if item?
-      atom.workspace.open(item.getFilePath())
-      @cancel()
+      filePath = item.getFilePath()
     else
       sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
       if sanitizedQuery.length > 0
         filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
         fs.writeFileSync(filePath, '')
-        atom.workspace.open(filePath)
-      @cancel()
+
+    if filePath
+      atom.workspace.open(filePath).then (editor) ->
+        save = ->
+          atom.packages.deactivatePackage 'whitespace'
+          editor.save()
+          atom.packages.activatePackage 'whitespace'
+        debouncedSave = _.debounce save, 1000
+        editor.onDidStopChanging () ->
+          debouncedSave() if editor.isModified()
+
+    @cancel()
 
   destroy: ->
     @cancel()
