@@ -87,16 +87,24 @@ class NotationalVelocityView extends SelectListView
 
   confirmSelection: ->
     item = @getSelectedItem()
+    filePath = null
     if item?
-      atom.workspace.open(item.getFilePath())
-      @cancel()
+      filePath = item.getFilePath()
     else
       sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
       if sanitizedQuery.length > 0
         filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
         fs.writeFileSync(filePath, '')
-        atom.workspace.open(filePath)
-      @cancel()
+
+    if filePath
+      atom.workspace.open(filePath).then (editor) ->
+        editor.onDidStopChanging () ->
+          if editor.isModified()
+            atom.packages.deactivatePackage("whitespace");
+            editor.save()
+            atom.packages.activatePackage("whitespace");
+
+    @cancel()
 
   destroy: ->
     @cancel()
