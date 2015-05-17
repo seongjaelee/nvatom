@@ -47,7 +47,7 @@ class NotationalVelocityView extends SelectListView
     currCursorPosition = editor.getCursorBufferPosition().column
     if titleItem != null && @prevCursorPosition < currCursorPosition
       @prevFilterQuery = titleItem.getTitle()
-      editor.setText(titleItem.getTitle())
+      editor.setText(filterQuery + titleItem.getTitle().slice(filterQuery.length))
       editor.selectLeft(titleItem.getTitle().length - filterQuery.length)
     @prevCursorPosition = currCursorPosition
 
