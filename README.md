@@ -31,8 +31,10 @@ To configure your note directory, set `notational-velocity.directory`:
 * Open your `~/.atom/config.cson` file via *Atom > Open Your Config*
 * Append the following lines, indented one step in from `*` at the top:
 
-          'notational-velocity':
-            directory: '/path/to/your/notes'
+    ```cson
+      'notational-velocity':
+        directory: '/path/to/your/notes'
+    ```
 
 Double-quotes also work.
 
