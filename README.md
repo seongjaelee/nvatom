@@ -28,7 +28,7 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 To configure your note directory, set `notational-velocity.directory`:
 
-* Open your `~/.atom/config.cson` file via *Atom > Open Your Config*
+* Open your `~/.atom/config.cson` file from the menu: *Atom > Open Your Config*
 * Append the following lines, indented one step in from `*` at the top:
 
     ```cson
