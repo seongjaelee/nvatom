@@ -26,7 +26,21 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 ## Settings
 
-- `Note Directory`: The directory to archive notes.
+To configure your note directory, set `notational-velocity.directory`:
+
+* Open your `~/.atom/config.cson` file from the menu: *Atom > Open Your Config*
+* Append the following lines:
+
+    ```cson
+      'notational-velocity':
+        directory: '/path/to/your/notes'
+    ```
+
+The first line should be indented by one step from `*` at the top. If you've
+kept the default indentation of two spaces, the block above should paste in
+properly.
+
+Double-quotes also work.
 
 ## Key Bindings
 
