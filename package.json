@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "private": true,
   "contributors": [
-    "Seongjae Lee <seongjae@gmail.com>"
+    "Seongjae Lee <seongjae@gmail.com>",
+    "Nikita Litvin <deltaidea@derpy.ru>"
   ],
   "description": "Notational Velocity for Atom",
   "activationCommands": {
