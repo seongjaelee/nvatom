@@ -1,13 +1,13 @@
 path = require 'path'
 fs = require 'fs'
-pathWatcher = require 'pathwatcher'
+chokidar = require 'chokidar'
 
 module.exports =
 class Note
   constructor: (@filePath, @parent, @onChangeCallback) ->
     @updateMetadata()
     @updateText()
-    @watcher = pathWatcher.watch(@filePath, (event) => @onChange(event))
+    @watcher = chokidar.watch(@filePath).on('all', (event) => @onChange(event))
 
   destroy: ->
     @watcher.close()

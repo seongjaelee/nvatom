@@ -1,6 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
-pathWatcher = require 'pathwatcher'
+chokidar = require 'chokidar'
 Note = require './note'
 
 module.exports =
@@ -9,7 +9,7 @@ class NoteDirectory
     @directories = []
     @notes = []
     @updateMetadata()
-    @watcher = pathWatcher.watch(@filePath, (event) => @onChange(event))
+    @watcher = chokidar.watch(@filePath).on('all', (event) => @onChange(event))
 
   destroy: ->
     @notes.map (x) -> x.destroy()
@@ -52,7 +52,7 @@ class NoteDirectory
 
   onChange: (event) ->
     # For the case of rename and change, it will be handled in its parent.
-    if event == 'change'
+    if event in ['add', 'addDir', 'change']
       @updateMetadata()
       if @onChangeCallback != null
         @onChangeCallback()

@@ -1,7 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-pathWatcher = require 'pathwatcher'
 Note = require '../lib/note'
 
 describe 'Note', ->
