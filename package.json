@@ -20,14 +20,16 @@
   },
   "homepage": "https://github.com/seongjaelee/notational-velocity",
   "dependencies": {
-    "atom-space-pen-views": "^2.0.3",
-    "docquery": "^1.1.0",
     "fs-plus": "2.x",
+    "atom-space-pen-views": "^2.0.3",
+    "pathwatcher": "^4.2",
     "underscore-plus": "^1.6.6"
   },
   "devDependencies": {
     "fs-plus": "2.x",
     "atom-space-pen-views": "^2.0.3",
-    "underscore-plus": "^1.6.6"
+    "pathwatcher": "^4.2",
+    "underscore-plus": "^1.6.6",
+    "temp": "~0.7.0"
   }
 }
