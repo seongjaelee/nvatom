@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "private": true,
   "contributors": [
-    "Seongjae Lee <seongjae@gmail.com>"
+    "Seongjae Lee <seongjae@gmail.com>",
+    "Nikita Litvin <deltaidea@derpy.ru>"
   ],
   "description": "Notational Velocity for Atom",
   "activationCommands": {
@@ -22,13 +23,13 @@
   "dependencies": {
     "fs-plus": "2.x",
     "atom-space-pen-views": "^2.0.3",
-    "pathwatcher": "^4.2",
+    "chokidar": "^1.0.5",
     "underscore-plus": "^1.6.6"
   },
   "devDependencies": {
     "fs-plus": "2.x",
     "atom-space-pen-views": "^2.0.3",
-    "pathwatcher": "^4.2",
+    "chokidar": "^1.0.5",
     "underscore-plus": "^1.6.6",
     "temp": "~0.7.0"
   }

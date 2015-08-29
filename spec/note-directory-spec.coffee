@@ -1,7 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-pathWatcher = require 'pathwatcher'
 NoteDirectory = require '../lib/note-directory'
 Note = require '../lib/note'
 
@@ -42,7 +41,7 @@ describe 'NoteDirectory.getNotes', ->
   afterEach ->
     noteDirectory.destroy()
     fs.unlinkSync(path.join(tempDirectory, 'Car', 'Mini.md'))
-    fs.rmdirSync(path.join(tempDirectory, 'Car'))
+    fs.removeSync(path.join(tempDirectory, 'Car'))
     fs.unlinkSync(path.join(tempDirectory, 'Readme.md'))
     atom.config.set('notational-velocity.directory', defaultDirectory)
 
@@ -114,4 +113,4 @@ describe 'NoteDirectory.getNotes', ->
       expect(notes[0].getText()).toBe 'milk'
       # So that it won't spit an error in the teardown stage.
       fs.unlinkSync(path.join(tempDirectory, 'Food', 'Milk.md'))
-      fs.rmdirSync(path.join(tempDirectory, 'Food'))
+      fs.removeSync(path.join(tempDirectory, 'Food'))
