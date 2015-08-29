@@ -44,7 +44,7 @@ module.exports =
   serialize: ->
     notationalVelocityViewState: @notationalVelocityView.serialize()
 
-  createView: (state) ->
+  createView: (state, docQuery) ->
     unless @notationalVelocityView?
       NotationalVelocityView = require './notational-velocity-view'
       @notationalVelocityView = new NotationalVelocityView(state.notationalVelocityViewState)
