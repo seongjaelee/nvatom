@@ -2,69 +2,54 @@ path = require 'path'
 fs = require 'fs-plus'
 _ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
-NoteDirectory = require './note-directory'
-Note = require './note'
+DocQuery = require 'DocQuery'
 
 module.exports =
 class NotationalVelocityView extends SelectListView
-  initialize: ->
+  initialize: (state) ->
+    @initializedAt = new Date()
     super
     @addClass('notational-velocity from-top overlay')
     @rootDirectory = atom.config.get('notational-velocity.directory')
     if !fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
         + "Set the note directory to the existing one from Settings.")
-    @noteDirectory = new NoteDirectory(@rootDirectory, null, () => @updateNotes())
-    @updateNotes()
     @prevFilterQuery = ''
     @prevCursorPosition = 0
-
-  updateNotes: () ->
-    @notes = @noteDirectory.getNotes()
-    @setItems(@notes)
+    @documentsLoaded = false
+    @docQuery = new DocQuery(@rootDirectory, {recursive: true})
+    @docQuery.on "ready", () =>
+      @documentsLoaded = true
+      @setLoading()
+      @populateList()
+    @docQuery.on "added", (fileDetails) =>
+      @populateList() if @documentsLoaded
+    @docQuery.on "updated", (fileDetails) =>
+      @populateList() if @documentsLoaded
+    @docQuery.on "removed", (fileDetails) =>
+      @populateList() if @documentsLoaded
 
   selectItem: (filterQuery) ->
     if filterQuery.length == 0
       @prevCursorPosition = 0
       return null
 
-    titlePatterns = [
-      ///^#{filterQuery}$///i,
-      ///^#{filterQuery}///i,
-    ]
-
-    titleItem = null
-    for titlePattern in titlePatterns
-      titleItems = @notes
-        .filter (x) -> x.getTitle().match(titlePattern) != null
-      titleItem = if titleItems.length > 0 then titleItems[0] else null
-      if titleItem != null
-        break
+    titleItem = @docQuery.search(filterQuery)[0]
 
     # If title item is not null, auto-fill the search panel.
     # But we don't want to fill it when deleting.
     editor = @filterEditorView.model
     currCursorPosition = editor.getCursorBufferPosition().column
-    if titleItem != null && @prevCursorPosition < currCursorPosition
-      @prevFilterQuery = titleItem.getTitle()
-      editor.setText(filterQuery + titleItem.getTitle().slice(filterQuery.length))
-      editor.selectLeft(titleItem.getTitle().length - filterQuery.length)
+    if titleItem != undefined && @prevCursorPosition < currCursorPosition
+      @prevFilterQuery = titleItem.title
+      editor.setText(filterQuery + titleItem.title.slice(filterQuery.length))
+      editor.selectLeft(titleItem.title.length - filterQuery.length)
     @prevCursorPosition = currCursorPosition
 
     return titleItem
 
   filter: (filterQuery) ->
-    if filterQuery.length == 0
-      return @notes
-
-    queries = filterQuery.split(' ')
-      .filter (x) -> x.length > 0
-      .map (x) -> new RegExp(x, 'gi')
-    return @notes
-      .filter (x) ->
-        queries
-          .map (q) -> q.test(x.getText()) || q.test(x.getTitle())
-          .reduce (x, y) -> x && y
+    return @docQuery.search(filterQuery)
 
   getFilterKey: ->
     'filetext'
@@ -72,30 +57,35 @@ class NotationalVelocityView extends SelectListView
   toggle: ->
     if @panel?.isVisible()
       @hide()
-    else
+    else if @documentsLoaded
       @populateList()
+      @show()
+    else
+      @setLoading("Loading documents")
       @show()
 
   viewForItem: (item) ->
-    content = item.getText()[0...100]
+    content = item.body[0...100]
 
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
-          @span "#{item.getTitle()}"
-          @div class: 'metadata', "#{item.getModified().toLocaleDateString()}"
+          @span "#{item.title}"
+          @div class: 'metadata', "#{item.modifiedAt.toLocaleDateString()}"
         @div class: 'secondary-line', "#{content}"
 
   confirmSelection: ->
-    item = @getSelectedItem()
-    filePath = null
+    item           = @getSelectedItem()
+    filePath       = null
+    sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
+    calculatedPath = path.join(@rootDirectory, sanitizedQuery + '.md')
     if item?
-      filePath = item.getFilePath()
-    else
-      sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
-      if sanitizedQuery.length > 0
-        filePath = path.join(@rootDirectory, sanitizedQuery + '.md')
-        fs.writeFileSync(filePath, '')
+      filePath = item.filePath
+    else if fs.existsSync(calculatedPath)
+      filePath = calculatedPath
+    else if sanitizedQuery.length > 0
+      filePath = calculatedPath
+      fs.writeFileSync(filePath, '')
 
     if filePath
       atom.workspace.open(filePath).then (editor) ->
@@ -126,10 +116,13 @@ class NotationalVelocityView extends SelectListView
     @panel?.hide()
 
   populateList: ->
-    return unless @notes?
-
     filterQuery = @getFilterQuery()
-    filteredItems = @filter(filterQuery)
+    filteredItems = null
+    if filterQuery == "" || filterQuery == undefined
+      filteredItems = @docQuery.documents
+    else
+      filteredItems = @filter(filterQuery)
+
     selectedItem = @selectItem(filterQuery)
 
     @list.empty()
@@ -147,7 +140,7 @@ class NotationalVelocityView extends SelectListView
         @selectItemView(@list.find("li:nth-child(#{n})"))
 
     else
-      @setError(@getEmptyMessage(@notes.length, filteredItems.length))
+      @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
 
   schedulePopulateList: ->
     # We can skip it when we are just moving the position of the cursor.
