@@ -1,7 +1,7 @@
 {
   "name": "notational-velocity",
   "main": "./lib/notational-velocity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "contributors": [
     "Seongjae Lee <seongjae@gmail.com>",
@@ -28,6 +28,5 @@
     "fs-plus": "2.x",
     "underscore-plus": "^1.6.6"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
