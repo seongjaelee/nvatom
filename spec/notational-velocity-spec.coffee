@@ -1,7 +1,4 @@
-# Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
-#
-# To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
-# or `fdescribe`). Remove the `f` to unfocus the block.
+path = require 'path'
 
 describe "NotationalVelocity", ->
   defaultDirectory = atom.config.get('notational-velocity.directory')
@@ -20,8 +17,7 @@ describe "NotationalVelocity", ->
     it "attaches and then detaches the view", ->
       expect(workspaceElement.querySelector('.notational-velocity')).not.toExist()
 
-      # This is an activation event, triggering it will cause the package to be
-      # activated.
+      # This is an activation event, triggering it will cause the package to be activated.
       atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
 
       waitsForPromise ->
@@ -30,3 +26,24 @@ describe "NotationalVelocity", ->
       runs ->
         expect(workspaceElement.querySelector('.notational-velocity')).toExist()
         atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
+
+    it "checks if we banned the default directory under packages directory", ->
+      atom.notifications.clear()
+
+      waitsForPromise ->
+        atom.packages.activatePackage('notifications')
+
+      runs ->
+        defaultNoteDirectory = path.join(process.env.ATOM_HOME, 'packages', 'notational-velocity', 'notebook')
+        atom.config.set('notational-velocity.directory', defaultNoteDirectory)
+
+        # This is an activation event, triggering it will cause the package to be activated.
+        atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          notificationContainer = workspaceElement.querySelector('atom-notifications')
+          notification = notificationContainer.querySelector('atom-notification.fatal')
+          expect(notification).toExist()
