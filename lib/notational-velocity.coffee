@@ -95,9 +95,6 @@ module.exports =
       atom.notifications.addError('notational-velocity.directory #{prevNoteDirectory} does not exists. Migration process is failed.')
       return
 
-    alert(prevNoteDirectory)
-    alert(currNoteDirectory)
-
     if prevNoteDirectory.startsWith(packagesDirectory)
       fs.makeTreeSync(currNoteDirectory)
       fs.copySync(prevNoteDirectory, currNoteDirectory)
