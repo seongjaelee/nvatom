@@ -1,5 +1,7 @@
 # Notational Velocity for Atom
 
+*`notational-velocity` package is renamed to `nvatom` package due to a fatal bug. For more info, refer [migration section](#migration).*
+
 [![Build Status][3]][4]
 
 [Notational Velocity][1] is an application that stores and retrieves notes.
@@ -26,13 +28,13 @@ We do believe Notational Velocity is the precursor of the famous note-taking app
 
 ## Settings
 
-To configure your note directory, set `notational-velocity.directory`:
+To configure your note directory, set `nvatom.directory`:
 
 * Open your `~/.atom/config.cson` file from the menu: *Atom > Open Your Config*
 * Append the following lines:
 
     ```cson
-      'notational-velocity':
+      'nvatom':
         directory: '/path/to/your/notes'
     ```
 
@@ -52,8 +54,16 @@ You can also override `cmd-l` if you want to keep your muscle memory from Notati
 'atom-text-editor':
   'cmd-l': 'unset!'
 'atom-workspace':
-  'cmd-l': 'notational-velocity:toggle'
+  'cmd-l': 'nvatom:toggle'
 ```
+
+## Migration
+
+v0.1.0 under published package name `notational-velocity` had a fatal bug that sets the default value of its note directory under package directory. Since package directory is overwritten when the user updates `notational-velocity` package. For more information, refer [#25][6].
+
+To resolve this problem, we renamed our package name to `nvatom`. Users who have the old `notational-velocity` need to **install `nvatom` package first**, activate the package to automatically migrate the existing notes, and then delete `notational-velocity` package.
+
+Since keymaps overlap with `notational-velocity`, follow the menu *Packages > nvAtom > Toggle* to activate this package.
 
 ## References
 
@@ -69,3 +79,4 @@ You can also override `cmd-l` if you want to keep your muscle memory from Notati
 [3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master
 [4]: https://travis-ci.org/seongjaelee/notational-velocity
 [5]: https://cloud.githubusercontent.com/assets/948301/7246990/2e2b4c6e-e7b9-11e4-93b0-57954e011e81.gif
+[6]: https://github.com/seongjaelee/notational-velocity/issues/25

@@ -9,8 +9,8 @@ class NotationalVelocityView extends SelectListView
   initialize: (state) ->
     @initializedAt = new Date()
     super
-    @addClass('notational-velocity from-top overlay')
-    @rootDirectory = atom.config.get('notational-velocity.directory')
+    @addClass('nvatom from-top overlay')
+    @rootDirectory = atom.config.get('nvatom.directory')
     if !fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
         + "Set the note directory to the existing one from Settings.")

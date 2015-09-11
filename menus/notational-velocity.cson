@@ -3,11 +3,11 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'Notational Velocity'
+      'label': 'nvAtom'
       'submenu': [
         {
           'label': 'Toggle'
-          'command': 'notational-velocity:toggle'
+          'command': 'nvatom:toggle'
         }
       ]
     ]

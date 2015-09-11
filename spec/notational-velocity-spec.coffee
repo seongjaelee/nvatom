@@ -1,31 +1,31 @@
 path = require 'path'
 
-describe "NotationalVelocity", ->
-  defaultDirectory = atom.config.get('notational-velocity.directory')
+describe "nvAtom", ->
+  defaultDirectory = atom.config.get('nvatom.directory')
   activationPromise = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('notational-velocity')
-    atom.config.set('notational-velocity.directory', 'testdata')
+    activationPromise = atom.packages.activatePackage('nvatom')
+    atom.config.set('nvatom.directory', 'testdata')
 
   afterEach ->
-    atom.config.set('notational-velocity.directory', defaultDirectory)
+    atom.config.set('nvatom.directory', defaultDirectory)
 
-  describe "when the notational-velocity:toggle event is triggered", ->
+  describe "when the nvatom:toggle event is triggered", ->
     it "attaches and then detaches the view", ->
-      expect(workspaceElement.querySelector('.notational-velocity')).not.toExist()
+      expect(workspaceElement.querySelector('.nvatom')).not.toExist()
 
       # This is an activation event, triggering it will cause the package to be activated.
-      atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
+      atom.commands.dispatch workspaceElement, 'nvatom:toggle'
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        expect(workspaceElement.querySelector('.notational-velocity')).toExist()
-        atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
+        expect(workspaceElement.querySelector('.nvatom')).toExist()
+        atom.commands.dispatch workspaceElement, 'nvatom:toggle'
 
     it "checks if we banned the default directory under packages directory", ->
       atom.notifications.clear()
@@ -34,11 +34,11 @@ describe "NotationalVelocity", ->
         atom.packages.activatePackage('notifications')
 
       runs ->
-        defaultNoteDirectory = path.join(process.env.ATOM_HOME, 'packages', 'notational-velocity', 'notebook')
-        atom.config.set('notational-velocity.directory', defaultNoteDirectory)
+        noteDirectoryUnderPackageDirectory = path.join(process.env.ATOM_HOME, 'packages', 'nvatom', 'notebook')
+        atom.config.set('nvatom.directory', noteDirectoryUnderPackageDirectory)
 
         # This is an activation event, triggering it will cause the package to be activated.
-        atom.commands.dispatch workspaceElement, 'notational-velocity:toggle'
+        atom.commands.dispatch workspaceElement, 'nvatom:toggle'
 
         waitsForPromise ->
           activationPromise
