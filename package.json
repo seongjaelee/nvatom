@@ -1,7 +1,7 @@
 {
   "name": "nvatom",
   "main": "./lib/notational-velocity",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "contributors": [
     "Seongjae Lee <seongjae@gmail.com>",
