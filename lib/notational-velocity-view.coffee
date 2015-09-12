@@ -49,6 +49,8 @@ class NotationalVelocityView extends SelectListView
     return titleItem
 
   filter: (filterQuery) ->
+    if filterQuery == "" || filterQuery == undefined
+      return @docQuery.documents
     return @docQuery.search(filterQuery)
 
   getFilterKey: ->
@@ -123,11 +125,7 @@ class NotationalVelocityView extends SelectListView
 
   populateList: ->
     filterQuery = @getFilterQuery()
-    filteredItems = null
-    if filterQuery == "" || filterQuery == undefined
-      filteredItems = @docQuery.documents
-    else
-      filteredItems = @filter(filterQuery)
+    filteredItems = @filter(filterQuery)
 
     selectedItem = @selectItem(filterQuery)
 
