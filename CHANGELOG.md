@@ -1,3 +1,6 @@
+## 0.8.0
+- Add a feature to delete an empty note automatically when closing its pane
+
 ## 0.7.0
 - Add `extensions` setting
 
