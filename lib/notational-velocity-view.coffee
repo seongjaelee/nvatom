@@ -17,7 +17,7 @@ class NotationalVelocityView extends SelectListView
     @skipPopulateList = false
     @prevCursorPosition = 0
     @documentsLoaded = false
-    @docQuery = new DocQuery(@rootDirectory, {recursive: true})
+    @docQuery = new DocQuery(@rootDirectory, {recursive: true, extensions: atom.config.get('nvatom.extensions')})
     @docQuery.on "ready", () =>
       @documentsLoaded = true
       @setLoading()
@@ -92,7 +92,8 @@ class NotationalVelocityView extends SelectListView
     item = @getSelectedItem()
     filePath = null
     sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
-    calculatedPath = path.join(@rootDirectory, sanitizedQuery + '.md')
+    extension = if atom.config.get('nvatom.extensions').length then atom.config.get('nvatom.extensions')[0] else '.md'
+    calculatedPath = path.join(@rootDirectory, sanitizedQuery + extension)
     if item?
       filePath = item.filePath
     else if fs.existsSync(calculatedPath)
