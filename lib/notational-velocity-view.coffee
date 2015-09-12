@@ -75,8 +75,8 @@ class NotationalVelocityView extends SelectListView
         @div class: 'secondary-line', "#{content}"
 
   confirmSelection: ->
-    item           = @getSelectedItem()
-    filePath       = null
+    item = @getSelectedItem()
+    filePath = null
     sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
     calculatedPath = path.join(@rootDirectory, sanitizedQuery + '.md')
     if item?
