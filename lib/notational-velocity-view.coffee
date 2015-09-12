@@ -29,24 +29,34 @@ class NotationalVelocityView extends SelectListView
     @docQuery.on "removed", (fileDetails) =>
       @populateList() if @documentsLoaded
 
-  selectItem: (filterQuery) ->
-    if filterQuery.length == 0
-      @prevCursorPosition = 0
-      return null
-
-    titleItem = @docQuery.search(filterQuery)[0]
-
-    # If title item is not null, auto-fill the search panel.
-    # But we don't want to fill it when deleting.
+  isCursorProceeded: ->
     editor = @filterEditorView.model
     currCursorPosition = editor.getCursorBufferPosition().column
-    if titleItem != undefined && @prevCursorPosition < currCursorPosition
-      @skipPopulateList = true
-      editor.setText(filterQuery + titleItem.title.slice(filterQuery.length))
-      editor.selectLeft(titleItem.title.length - filterQuery.length)
+    isCursorProceeded = @prevCursorPosition < currCursorPosition
     @prevCursorPosition = currCursorPosition
+    return isCursorProceeded
 
-    return titleItem
+  selectItem: (filteredItems, filterQuery) ->
+    isCursorProceeded = @isCursorProceeded()
+
+    for item in filteredItems
+      if item.title.match(///^#{filterQuery}$///i) != null
+        # autoselect
+        n = filteredItems.indexOf(item) + 1
+        @selectItemView(@list.find("li:nth-child(#{n})"))
+        return
+
+    for item in filteredItems
+      if item.title.match(///^#{filterQuery}///i) != null && isCursorProceeded
+        # autocomplete
+        @skipPopulateList = true
+        editor = @filterEditorView.model
+        editor.setText(filterQuery + item.title.slice(filterQuery.length))
+        editor.selectLeft(item.title.length - filterQuery.length)
+
+        # autoselect
+        n = filteredItems.indexOf(item) + 1
+        @selectItemView(@list.find("li:nth-child(#{n})"))
 
   filter: (filterQuery) ->
     if filterQuery == "" || filterQuery == undefined
@@ -127,8 +137,6 @@ class NotationalVelocityView extends SelectListView
     filterQuery = @getFilterQuery()
     filteredItems = @filter(filterQuery)
 
-    selectedItem = @selectItem(filterQuery)
-
     @list.empty()
     if filteredItems.length
       @setError(null)
@@ -139,8 +147,7 @@ class NotationalVelocityView extends SelectListView
         itemView.data('select-list-item', item)
         @list.append(itemView)
 
-      if selectedItem
-        @selectItemView(@list.find("li:nth-child(#{1})"))
+      @selectItem(filteredItems, filterQuery)
 
     else
       @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
