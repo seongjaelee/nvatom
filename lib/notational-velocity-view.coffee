@@ -28,6 +28,8 @@ class NotationalVelocityView extends SelectListView
       @populateList() if @documentsLoaded
     @docQuery.on "removed", (fileDetails) =>
       @populateList() if @documentsLoaded
+    if !atom.config.get('nvatom.enableLunrPipeline')
+      @docQuery.searchIndex.pipeline.reset()
 
   isCursorProceeded: ->
     editor = @filterEditorView.model

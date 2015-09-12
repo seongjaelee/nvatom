@@ -9,6 +9,11 @@ module.exports =
       description: 'The directory to archive notes'
       type: 'string'
       default: path.join(process.env.ATOM_HOME, 'nvatom-notes')
+    enableLunrPipeline:
+      title: 'Enable Lunr Pipeline'
+      description: 'Lunr pipeline preprocesses query to make search faster. However, it will skip searching some of stop words such as "an" or "be".'
+      type: 'boolean'
+      default: true
 
   notationalVelocityView: null
 
