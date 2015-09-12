@@ -115,6 +115,12 @@ class NotationalVelocityView extends SelectListView
   hide: ->
     @panel?.hide()
 
+  getFilterQuery: ->
+    editor = @filterEditorView.model
+    fullText = editor.getText()
+    selectedText = editor.getSelectedText()
+    return fullText.substring(0, fullText.length - selectedText.length)
+
   populateList: ->
     filterQuery = @getFilterQuery()
     filteredItems = null
