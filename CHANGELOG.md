@@ -1,5 +1,8 @@
+## 0.7.0
+- Add `extensions` setting
+
 ## 0.5.0
-- Add `useLunrPipeline` feature
+- Add `useLunrPipeline` setting
 - Improve autoselect/autocomplete logic
 - Fix a bug that autocomplete feature does not work
 
