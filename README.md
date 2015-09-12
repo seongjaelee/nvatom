@@ -76,7 +76,7 @@ Since keymaps overlap with `notational-velocity`, follow the menu *Packages > nv
 
 [1]: http://notational.net/
 [2]: http://daringfireball.net/projects/markdown/syntax
-[3]: https://travis-ci.org/seongjaelee/notational-velocity.svg?branch=master
-[4]: https://travis-ci.org/seongjaelee/notational-velocity
+[3]: https://travis-ci.org/seongjaelee/nvatom.svg?branch=master
+[4]: https://travis-ci.org/seongjaelee/nvatom
 [5]: https://cloud.githubusercontent.com/assets/948301/7246990/2e2b4c6e-e7b9-11e4-93b0-57954e011e81.gif
-[6]: https://github.com/seongjaelee/notational-velocity/issues/25
+[6]: https://github.com/seongjaelee/nvatom/issues/25
