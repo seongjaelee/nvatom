@@ -1,3 +1,8 @@
+## 0.5.0
+- Add `useLunrPipeline` feature
+- Improve autoselect/autocomplete logic
+- Fix a bug that autocomplete feature does not work
+
 ## 0.4.0
 - Rename `notational-velocity` to `nvatom`
 - Copy `notational-velocity` settings/notes on initialization
