@@ -90,7 +90,7 @@ module.exports =
     defaultNoteDirectory = path.join(packagesDirectory, 'nvatom', 'notebook')
 
     if noteDirectory.startsWith(packagesDirectory)
-      throw new Error('Note directory #{noteDirectory} cannot reside within atom packages directory. Please change its value from package settings.')
+      throw new Error("Note directory #{noteDirectory} cannot reside within atom packages directory. Please change its value from package settings.")
 
     # Initialize note directory.
     if !fs.existsSync(noteDirectory)
@@ -115,7 +115,7 @@ module.exports =
     atom.notifications.addInfo('Migrating from notational-velocity package...')
 
     if !fs.existsSync(prevNoteDirectory)
-      atom.notifications.addError('notational-velocity.directory #{prevNoteDirectory} does not exists. Migration process is failed.')
+      atom.notifications.addError("notational-velocity.directory #{prevNoteDirectory} does not exists. Migration process is failed.")
       return
 
     if prevNoteDirectory.startsWith(packagesDirectory)
