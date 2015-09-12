@@ -14,7 +14,7 @@ class NotationalVelocityView extends SelectListView
     if !fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
         + "Set the note directory to the existing one from Settings.")
-    @prevFilterQuery = ''
+    @skipPopulateList = false
     @prevCursorPosition = 0
     @documentsLoaded = false
     @docQuery = new DocQuery(@rootDirectory, {recursive: true})
@@ -41,7 +41,7 @@ class NotationalVelocityView extends SelectListView
     editor = @filterEditorView.model
     currCursorPosition = editor.getCursorBufferPosition().column
     if titleItem != undefined && @prevCursorPosition < currCursorPosition
-      @prevFilterQuery = titleItem.title
+      @skipPopulateList = true
       editor.setText(filterQuery + titleItem.title.slice(filterQuery.length))
       editor.selectLeft(titleItem.title.length - filterQuery.length)
     @prevCursorPosition = currCursorPosition
@@ -146,8 +146,6 @@ class NotationalVelocityView extends SelectListView
       @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
 
   schedulePopulateList: ->
-    # We can skip it when we are just moving the position of the cursor.
-    currFilterQuery = @getFilterQuery()
-    if @prevFilterQuery != currFilterQuery
+    if !@skipPopulateList
       super
-    @prevFilterQuery = currFilterQuery
+    @skipPopulateList = false
