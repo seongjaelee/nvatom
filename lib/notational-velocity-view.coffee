@@ -11,7 +11,7 @@ class NotationalVelocityView extends SelectListView
     super
     @addClass('nvatom from-top overlay')
     @rootDirectory = atom.config.get('nvatom.directory')
-    if !fs.existsSync(@rootDirectory)
+    unless fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
         + "Set the note directory to the existing one from Settings.")
     @skipPopulateList = false
@@ -28,7 +28,7 @@ class NotationalVelocityView extends SelectListView
       @populateList() if @documentsLoaded
     @docQuery.on "removed", (fileDetails) =>
       @populateList() if @documentsLoaded
-    if !atom.config.get('nvatom.enableLunrPipeline')
+    unless atom.config.get('nvatom.enableLunrPipeline')
       @docQuery.searchIndex.pipeline.reset()
 
   isCursorProceeded: ->
@@ -42,14 +42,14 @@ class NotationalVelocityView extends SelectListView
     isCursorProceeded = @isCursorProceeded()
 
     for item in filteredItems
-      if item.title.match(///^#{filterQuery}$///i) != null
+      if item.title.match(///^#{filterQuery}$///i) isnt null
         # autoselect
         n = filteredItems.indexOf(item) + 1
         @selectItemView(@list.find("li:nth-child(#{n})"))
         return
 
     for item in filteredItems
-      if item.title.match(///^#{filterQuery}///i) != null && isCursorProceeded
+      if (item.title.match(///^#{filterQuery}///i) isnt null) and isCursorProceeded
         # autocomplete
         @skipPopulateList = true
         editor = @filterEditorView.model
@@ -61,7 +61,7 @@ class NotationalVelocityView extends SelectListView
         @selectItemView(@list.find("li:nth-child(#{n})"))
 
   filter: (filterQuery) ->
-    if filterQuery == "" || filterQuery == undefined
+    if (filterQuery is "") or (filterQuery is undefined)
       return @docQuery.documents
     return @docQuery.search(filterQuery)
 
@@ -156,6 +156,6 @@ class NotationalVelocityView extends SelectListView
       @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
 
   schedulePopulateList: ->
-    if !@skipPopulateList
+    unless @skipPopulateList
       super
     @skipPopulateList = false

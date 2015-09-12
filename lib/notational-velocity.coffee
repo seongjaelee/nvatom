@@ -66,14 +66,14 @@ module.exports =
     return unless paneItem?.getURI?()?
     return unless paneItem?.isModified?()
     uri = paneItem.getURI()
-    return unless uri.indexOf(@rootDirectory) == 0
+    return unless uri.indexOf(@rootDirectory) is 0
     return unless path.extname(uri) in atom.config.get('nvatom.extensions')
     paneItem?.save?()
 
   autodelete: (paneItem) ->
     return false unless paneItem?.getURI?()?
     uri = paneItem.getURI()
-    return false unless uri.indexOf(@rootDirectory) == 0
+    return false unless uri.indexOf(@rootDirectory) is 0
     return false unless path.extname(uri) in atom.config.get('nvatom.extensions')
     return false unless paneItem?.isEmpty()
     fs.unlinkSync(uri)
@@ -93,10 +93,10 @@ module.exports =
       throw new Error("Note directory #{noteDirectory} cannot reside within atom packages directory. Please change its value from package settings.")
 
     # Initialize note directory.
-    if !fs.existsSync(noteDirectory)
+    unless fs.existsSync(noteDirectory)
       @tryMigrateFromNotationalVelocity()
       noteDirectory = atom.config.get('nvatom.directory')
-      if !fs.existsSync(noteDirectory)
+      unless fs.existsSync(noteDirectory)
         fs.makeTreeSync(noteDirectory)
         fs.copySync(defaultNoteDirectory, noteDirectory)
 
@@ -109,12 +109,12 @@ module.exports =
     defaultNoteDirectory = path.join(packagesDirectory, 'nvatom', 'notebook')
 
     # notational-velocity does not exist.
-    if prevNoteDirectory == undefined
+    if prevNoteDirectory is undefined
       return
 
     atom.notifications.addInfo('Migrating from notational-velocity package...')
 
-    if !fs.existsSync(prevNoteDirectory)
+    unless fs.existsSync(prevNoteDirectory)
       atom.notifications.addError("notational-velocity.directory #{prevNoteDirectory} does not exists. Migration process is failed.")
       return
 
