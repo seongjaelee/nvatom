@@ -136,8 +136,7 @@ class NotationalVelocityView extends SelectListView
         @list.append(itemView)
 
       if selectedItem
-        n = filteredItems.indexOf(selectedItem) + 1
-        @selectItemView(@list.find("li:nth-child(#{n})"))
+        @selectItemView(@list.find("li:nth-child(#{1})"))
 
     else
       @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
