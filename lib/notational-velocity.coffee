@@ -67,7 +67,7 @@ module.exports =
     return unless paneItem?.isModified?()
     uri = paneItem.getURI()
     return unless uri.indexOf(@rootDirectory) == 0
-    return unless fs.isMarkdownExtension(path.extname(uri))
+    return unless path.extname(uri) in atom.config.get('nvatom.extensions')
     paneItem?.save?()
 
   autosaveAll: ->
