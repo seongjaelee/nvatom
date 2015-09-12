@@ -59,7 +59,7 @@ You can also override `cmd-l` if you want to keep your muscle memory from Notati
 
 ## Migration
 
-v0.1.0 under published package name `notational-velocity` had a fatal bug that sets the default value of its note directory under package directory. Since package directory is overwritten when the user updates `notational-velocity` package. For more information, refer [#25][6].
+v0.1.0 under published package name `notational-velocity` had a fatal bug that sets the default value of its note directory under package directory. In that case, all notes are deleted once the user updates the package, since package directory is overwritten when the user. For more information, refer [#25][6].
 
 To resolve this problem, we renamed our package name to `nvatom`. Users who have the old `notational-velocity` need to **install `nvatom` package first**, activate the package to automatically migrate the existing notes, and then delete `notational-velocity` package.
 
