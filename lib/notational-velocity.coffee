@@ -47,7 +47,7 @@ module.exports =
     window.addEventListener('blur', handleBlur, true)
     @subscriptions.add new Disposable -> window.removeEventListener('blur', handleBlur, true)
 
-    @subscriptions.add atom.workspace.onWillDestroyPaneItem ({item}) => @autosave(item)
+    @subscriptions.add atom.workspace.onWillDestroyPaneItem ({item}) => @autosave(item) unless @autodelete(item)
 
   deactivate: ->
     @subscriptions.dispose()
@@ -69,6 +69,17 @@ module.exports =
     return unless uri.indexOf(@rootDirectory) == 0
     return unless path.extname(uri) in atom.config.get('nvatom.extensions')
     paneItem?.save?()
+
+  autodelete: (paneItem) ->
+    return false unless paneItem?.getURI?()?
+    uri = paneItem.getURI()
+    return false unless uri.indexOf(@rootDirectory) == 0
+    return false unless path.extname(uri) in atom.config.get('nvatom.extensions')
+    return false unless paneItem?.isEmpty()
+    fs.unlinkSync(uri)
+    noteName = uri.substring(@rootDirectory.length + 1)
+    atom.notifications.addInfo("Empty note #{noteName} is deleted.")
+    return true
 
   autosaveAll: ->
     @autosave(paneItem) for paneItem in atom.workspace.getPaneItems()
