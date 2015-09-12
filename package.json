@@ -12,15 +12,15 @@
   "activationCommands": {
     "atom-workspace": "nvatom:toggle"
   },
-  "repository": "https://github.com/seongjaelee/notational-velocity",
+  "repository": "https://github.com/seongjaelee/nvatom",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
   "bugs": {
-    "url": "https://github.com/seongjaelee/notational-velocity/issues"
+    "url": "https://github.com/seongjaelee/nvatom/issues"
   },
-  "homepage": "https://github.com/seongjaelee/notational-velocity",
+  "homepage": "https://github.com/seongjaelee/nvatom",
   "dependencies": {
     "atom-space-pen-views": "^2.0.3",
     "chokidar": "^1.0.5",
