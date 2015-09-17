@@ -42,14 +42,14 @@ class NotationalVelocityView extends SelectListView
     isCursorProceeded = @isCursorProceeded()
 
     for item in filteredItems
-      if item.title.match(///^#{filterQuery}$///i) isnt null
+      if item.title.toLowerCase() is filterQuery.toLowerCase()
         # autoselect
         n = filteredItems.indexOf(item) + 1
         @selectItemView(@list.find("li:nth-child(#{n})"))
         return
 
     for item in filteredItems
-      if (item.title.match(///^#{filterQuery}///i) isnt null) and isCursorProceeded
+      if item.title.toLowerCase().startsWith(filterQuery.toLowerCase()) and isCursorProceeded
         # autocomplete
         @skipPopulateList = true
         editor = @filterEditorView.model
