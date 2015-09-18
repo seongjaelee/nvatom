@@ -38,33 +38,6 @@ class NotationalVelocityView extends SelectListView
     @prevCursorPosition = currCursorPosition
     return isCursorProceeded
 
-  selectItem: (filteredItems, filterQuery) ->
-    isCursorProceeded = @isCursorProceeded()
-
-    for item in filteredItems
-      if item.title.toLowerCase() is filterQuery.toLowerCase()
-        # autoselect
-        n = filteredItems.indexOf(item) + 1
-        @selectItemView(@list.find("li:nth-child(#{n})"))
-        return
-
-    for item in filteredItems
-      if item.title.toLowerCase().startsWith(filterQuery.toLowerCase()) and isCursorProceeded
-        # autocomplete
-        @skipPopulateList = true
-        editor = @filterEditorView.model
-        editor.setText(filterQuery + item.title.slice(filterQuery.length))
-        editor.selectLeft(item.title.length - filterQuery.length)
-
-        # autoselect
-        n = filteredItems.indexOf(item) + 1
-        @selectItemView(@list.find("li:nth-child(#{n})"))
-
-  filter: (filterQuery) ->
-    if (filterQuery is "") or (filterQuery is undefined)
-      return @docQuery.documents
-    return @docQuery.search(filterQuery)
-
   getFilterKey: ->
     'filetext'
 
@@ -136,24 +109,73 @@ class NotationalVelocityView extends SelectListView
     selectedText = editor.getSelectedText()
     return fullText.substring(0, fullText.length - selectedText.length)
 
+  filterByTitle: (filterQuery) ->
+    if (filterQuery is "") or (filterQuery is undefined)
+      return []
+    filterQuery = filterQuery.toLowerCase()
+    matchingNotes = []
+    filteredNotes = []
+    for note in @docQuery.documents
+      title = note.title.toLowerCase()
+      if title is filterQuery
+        matchingNotes.push(note)
+      else if filteredNotes.length < @maxItems and title.startsWith(filterQuery)
+        filteredNotes.push(note)
+    notes = matchingNotes.concat(filteredNotes)
+    if notes.length > @maxItems
+      notes = notes.slice(0, @maxItems)
+    return notes
+
+  filterByLunr: (filterQuery) ->
+    notes = []
+    if (filterQuery is "") or (filterQuery is undefined)
+      notes = @docQuery.documents
+    else
+      notes = @docQuery.search(filterQuery)
+    if notes.length > @maxItems
+      notes = notes.slice(0, @maxItems)
+    return notes
+
   populateList: ->
     filterQuery = @getFilterQuery()
-    filteredItems = @filter(filterQuery)
+    notesByTitle = @filterByTitle(filterQuery)
+    notesByLunr = @filterByLunr(filterQuery)
+    isCursorProceeded = @isCursorProceeded()
 
     @list.empty()
-    if filteredItems.length
-      @setError(null)
+    if notesByTitle.length + notesByLunr.length == 0
+      @setError(@getEmptyMessage(@docQuery.documents.length, 0))
+      return
 
-      for i in [0...Math.min(filteredItems.length, @maxItems)]
-        item = filteredItems[i]
-        itemView = $(@viewForItem(item))
-        itemView.data('select-list-item', item)
-        @list.append(itemView)
+    @setError(null)
+    for note in notesByTitle
+      itemView = $(@viewForItem(note))
+      itemView.data('select-list-item', note)
+      @list.append(itemView)
 
-      @selectItem(filteredItems, filterQuery)
+    if notesByTitle.length
+      # autoselect
+      @selectItemView(@list.find("li:nth-child(1)"))
 
-    else
-      @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
+      #autocomplete
+      note = notesByTitle[0]
+      if note.title.toLowerCase() is filterQuery.toLowerCase() or isCursorProceeded
+        @skipPopulateList = true
+        editor = @filterEditorView.model
+        editor.setText(filterQuery + note.title.slice(filterQuery.length))
+        editor.selectLeft(note.title.length - filterQuery.length)
+
+    if @list.length >= @maxItems
+      return
+
+    for note in notesByLunr
+      if @list.length >= @maxItems
+        break
+      if filterQuery?.length and note.title.toLowerCase().startsWith(filterQuery.toLowerCase())
+        continue
+      itemView = $(@viewForItem(note))
+      itemView.data('select-list-item', note)
+      @list.append(itemView)
 
   schedulePopulateList: ->
     unless @skipPopulateList
