@@ -85,7 +85,7 @@ module.exports =
     @autosave(paneItem) for paneItem in atom.workspace.getPaneItems()
 
   ensureNoteDirectory: ->
-    noteDirectory = atom.config.get('nvatom.directory')
+    noteDirectory = fs.normalize(atom.config.get('nvatom.directory'))
     packagesDirectory = path.join(process.env.ATOM_HOME, 'packages')
     defaultNoteDirectory = path.join(packagesDirectory, 'nvatom', 'notebook')
 
