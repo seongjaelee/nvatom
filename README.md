@@ -13,6 +13,7 @@ This Atom package implements the some key features from this amazing app:
 - Modeless operation
 - Mouseless interaction
 - Incremental Search
+- Interlinks
 
 Integrated with Atom, we have several advantages:
 
@@ -47,6 +48,7 @@ Double-quotes also work.
 ## Key Bindings
 
 - `alt-cmd-l`: Toggles the search view.
+- `alt-cmd-o`: Jumps to the referred note when the cursor is on the interlink in the form of [[double-bracketed interlink]].
 
 You can also override `cmd-l` if you want to keep your muscle memory from Notational Velocity and nvALT. Just edit your keymap (Atom menu -> Open Your Keymap) and add the following lines:
 
