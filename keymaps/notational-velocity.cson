@@ -9,3 +9,5 @@
 # https://atom.io/docs/latest/advanced/keymaps
 'atom-workspace':
   'alt-cmd-l': 'nvatom:toggle'
+'atom-workspace atom-text-editor':
+  'alt-cmd-o': 'nvatom:openInterlink'

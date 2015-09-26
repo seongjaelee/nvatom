@@ -1,0 +1,27 @@
+'name': 'nvAtom Markdown'
+'scopeName': 'source.gfm'
+'fileTypes': [
+  'markdown'
+  'md'
+  'mdown'
+  'mkd'
+  'mkdown'
+  'rmd'
+  'ron'
+]
+'patterns': [
+  {
+    'include': 'source.gfm'
+  }
+  {
+    'match': '(\\[\\[)([^\\[\\]\|]+)(\\]\\])'
+    'name': 'interlink'
+    'captures':
+      '1':
+        'name': 'punctuation.definition.begin.gfm'
+      '2':
+        'name': 'markup.underline.link.interlink.gfm'
+      '3':
+        'name': 'punctuation.definition.begin.gfm'
+  }
+]

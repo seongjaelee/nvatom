@@ -3,6 +3,7 @@ fs = require 'fs-plus'
 _ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
 DocQuery = require 'docquery'
+Utility = require './utility'
 
 module.exports =
 class NotationalVelocityView extends SelectListView
@@ -10,7 +11,7 @@ class NotationalVelocityView extends SelectListView
     @initializedAt = new Date()
     super
     @addClass('nvatom from-top overlay')
-    @rootDirectory = fs.normalize(atom.config.get('nvatom.directory'))
+    @rootDirectory = Utility.getNoteDirectory()
     unless fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
         + "Set the note directory to the existing one from Settings.")
@@ -90,10 +91,9 @@ class NotationalVelocityView extends SelectListView
 
   confirmSelection: ->
     item = @getSelectedItem()
+    sanitizedQuery = Utility.trim(@getFilterQuery())
+    calculatedPath = Utility.getNotePath(sanitizedQuery)
     filePath = null
-    sanitizedQuery = @getFilterQuery().replace(/\s+$/, '')
-    extension = if atom.config.get('nvatom.extensions').length then atom.config.get('nvatom.extensions')[0] else '.md'
-    calculatedPath = path.join(@rootDirectory, sanitizedQuery + extension)
     if item?
       filePath = item.filePath
     else if fs.existsSync(calculatedPath)

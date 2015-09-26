@@ -10,8 +10,18 @@
   ],
   "description": "Notational Velocity for Atom",
   "activationCommands": {
-    "atom-workspace": "nvatom:toggle"
+    "atom-workspace": [
+      "nvatom:toggle",
+      "nvatom:openInterlink"
+    ]
   },
+  "keywords": [
+    "wiki",
+    "notational velocity",
+    "nvatom",
+    "note",
+    "notetaking"
+  ],
   "repository": "https://github.com/seongjaelee/nvatom",
   "license": "MIT",
   "engines": {

@@ -1,6 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 {CompositeDisposable, Disposable} = require 'atom'
+NoteLink = require './notelink'
 
 module.exports =
   config:
@@ -49,8 +50,11 @@ module.exports =
 
     @subscriptions.add atom.workspace.onWillDestroyPaneItem ({item}) => @autosave(item) unless @autodelete(item)
 
+    @noteLink = new NoteLink()
+
   deactivate: ->
     @subscriptions.dispose()
+    @noteLink.destroy()
     @notationalVelocityView.destroy()
 
   serialize: ->
@@ -66,15 +70,13 @@ module.exports =
     return unless paneItem?.getURI?()?
     return unless paneItem?.isModified?()
     uri = paneItem.getURI()
-    return unless uri.indexOf(@rootDirectory) is 0
-    return unless path.extname(uri) in atom.config.get('nvatom.extensions')
+    return unless Utility.isNote(uri)
     paneItem?.save?()
 
   autodelete: (paneItem) ->
     return false unless paneItem?.getURI?()?
     uri = paneItem.getURI()
-    return false unless uri.indexOf(@rootDirectory) is 0
-    return false unless path.extname(uri) in atom.config.get('nvatom.extensions')
+    return unless Utility.isNote(uri)
     return false unless paneItem?.isEmpty()
     fs.unlinkSync(uri)
     noteName = uri.substring(@rootDirectory.length + 1)
