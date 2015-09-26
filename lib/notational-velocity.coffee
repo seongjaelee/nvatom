@@ -2,6 +2,7 @@ path = require 'path'
 fs = require 'fs-plus'
 {CompositeDisposable, Disposable} = require 'atom'
 NoteLink = require './notelink'
+Utility = require './utility'
 
 module.exports =
   config:
