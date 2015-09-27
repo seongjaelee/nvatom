@@ -1,7 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 {CompositeDisposable, Disposable} = require 'atom'
-NoteLink = require './notelink'
+Interlink = require './interlink'
 Utility = require './utility'
 
 module.exports =
@@ -51,11 +51,11 @@ module.exports =
 
     @subscriptions.add atom.workspace.onWillDestroyPaneItem ({item}) => @autosave(item) unless @autodelete(item)
 
-    @noteLink = new NoteLink()
+    @interlink = new Interlink()
 
   deactivate: ->
     @subscriptions.dispose()
-    @noteLink.destroy()
+    @interlnk.destroy()
     @notationalVelocityView.destroy()
 
   serialize: ->

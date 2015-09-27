@@ -1,9 +1,9 @@
 fs = require 'fs-plus'
 path = require 'path'
 temp = require 'temp'
-NoteLink = require '../lib/notelink'
+Interlink = require '../lib/interlink'
 
-describe 'Notelink', ->
+describe 'Interlink', ->
   defaultDirectory = atom.config.get('nvatom.directory')
   noteDirectory = null
 
@@ -40,7 +40,7 @@ describe 'Notelink', ->
       for testitem in testdata
         editor.setText testitem.text
         editor.setCursorBufferPosition testitem.position
-        expect(NoteLink.getInterlinkUnderCursor(editor)).toBe testitem.expected
+        expect(Interlink.getInterlinkUnderCursor(editor)).toBe testitem.expected
 
     it 'returns undefined for invalid text', ->
       testdata = [
@@ -57,7 +57,7 @@ describe 'Notelink', ->
       for testitem in testdata
         editor.setText testitem.text
         editor.setCursorBufferPosition testitem.position
-        expect(NoteLink.getInterlinkUnderCursor(editor)).toBe undefined
+        expect(Interlink.getInterlinkUnderCursor(editor)).toBe undefined
 
   describe 'when openInterlink is called', ->
     describe 'when the editor path is under the note directory', ->
@@ -71,7 +71,7 @@ describe 'Notelink', ->
         editor.setText '[[Car]]'
         editor.setCursorBufferPosition [0, 2]
 
-        editorPromise = NoteLink.openInterlink()
+        editorPromise = Interlink.openInterlink()
         expect(editorPromise).not.toBe undefined
         waitsForPromise ->
           editorPromise
@@ -90,5 +90,5 @@ describe 'Notelink', ->
         editor.setText '[[Car]]'
         editor.setCursorBufferPosition [0, 2]
 
-        editorPromise = NoteLink.openInterlink()
+        editorPromise = Interlink.openInterlink()
         expect(editorPromise).toBe undefined

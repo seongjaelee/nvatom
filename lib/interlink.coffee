@@ -3,10 +3,10 @@ fs = require 'fs-plus'
 Utility = require './utility'
 
 module.exports =
-class NoteLink
+class Interlink
   constructor: ->
     @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => NoteLink.openInterlink()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => Interlink.openInterlink()
 
   destroy: ->
     @subscriptions.dispose()
@@ -16,7 +16,7 @@ class NoteLink
     return unless editor?
     return unless Utility.isNote(editor.getPath())
 
-    noteTitle = NoteLink.getInterlinkUnderCursor(editor)
+    noteTitle = Interlink.getInterlinkUnderCursor(editor)
     return unless noteTitle?
     return unless noteTitle.length
 
