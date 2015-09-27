@@ -10,6 +10,8 @@ class Utility
 
   @getPrimaryNoteExtension: -> if atom.config.get('nvatom.extensions').length then atom.config.get('nvatom.extensions')[0] else '.md'
 
-  @isNote: (filePath) -> filePath.startsWith(Utility.getNoteDirectory()) and path.extname(filePath) in atom.config.get('nvatom.extensions')
+  @isNote: (filePath) ->
+    filePath = fs.normalize(filePath)
+    return filePath.startsWith(Utility.getNoteDirectory()) and path.extname(filePath) in atom.config.get('nvatom.extensions')
 
   @trim: (str) -> str?.replace /^\s+|\s+$/g, ''

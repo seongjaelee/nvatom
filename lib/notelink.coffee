@@ -6,17 +6,17 @@ module.exports =
 class NoteLink
   constructor: ->
     @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => @openInterlink()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => NoteLink.openInterlink()
 
   destroy: ->
     @subscriptions.dispose()
 
-  openInterlink: ->
+  @openInterlink: ->
     editor = atom.workspace.getActiveTextEditor()
     return unless editor?
     return unless Utility.isNote(editor.getPath())
 
-    noteTitle = @getInterlinkUnderCursor(editor)
+    noteTitle = NoteLink.getInterlinkUnderCursor(editor)
     return unless noteTitle?
     return unless noteTitle.length
 
@@ -26,11 +26,13 @@ class NoteLink
       fs.writeFileSync(notePath, '')
     atom.workspace.open(notePath)
 
-  getInterlinkUnderCursor: (editor) ->
+  @getInterlinkUnderCursor: (editor) ->
     cursorPosition = editor.getCursorBufferPosition()
     token = editor.tokenForBufferPosition(cursorPosition)
     return unless token
     return unless token.value
     return unless token.scopes.indexOf('markup.underline.link.interlink.gfm') > -1
 
-    return token.value
+    interlink = Utility.trim(token.value)
+    return unless interlink.length
+    return interlink
