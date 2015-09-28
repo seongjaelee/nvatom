@@ -24,16 +24,12 @@ module.exports =
       type: 'boolean'
       default: true
 
-  notationalVelocityView: null
 
   activate: (state) ->
     @rootDirectory = @ensureNoteDirectory()
 
-    # Events subscribed to in atom's system can be easily cleaned up with a
-    # CompositeDisposable
     @subscriptions = new CompositeDisposable
 
-    # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace',
       'nvatom:toggle': => @createView(state).toggle()
 
@@ -55,11 +51,11 @@ module.exports =
 
   deactivate: ->
     @subscriptions.dispose()
-    @interlnk.destroy()
-    @notationalVelocityView.destroy()
+    @interlnk?.destroy()
+    @notationalVelocityView?.destroy()
 
   serialize: ->
-    notationalVelocityViewState: @notationalVelocityView.serialize()
+    notationalVelocityViewState: @notationalVelocityView?.serialize()
 
   createView: (state, docQuery) ->
     unless @notationalVelocityView?

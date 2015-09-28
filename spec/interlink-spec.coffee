@@ -9,14 +9,12 @@ describe 'Interlink', ->
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('nvatom')
     noteDirectory = temp.mkdirSync()
 
     atom.config.set('nvatom.directory', noteDirectory)
 
-    atom.commands.dispatch workspaceElement, 'nvatom:toggle'
     waitsForPromise ->
-      activationPromise
+      atom.packages.activatePackage('nvatom')
 
   afterEach ->
     atom.config.set('nvatom.directory', defaultDirectory)
@@ -24,39 +22,50 @@ describe 'Interlink', ->
   describe 'when getInerlinkUnderCursor is called', ->
     editor = null
 
-    beforeEach ->
-      waitsForPromise ->
-        atom.workspace.open(path.join(noteDirectory, 'Interlink.md')).then (o) -> editor = o
+    describe 'under the note directory', ->
+      beforeEach ->
+        waitsForPromise ->
+          atom.workspace.open(path.join(noteDirectory, 'Interlink.md')).then (o) -> editor = o
 
-    it 'returns a trimmed interlink text', ->
-      testdata = [
-        { position: [0, 2], text: '[[Car]]', expected: 'Car' },
-        { position: [0, 2], text: '[[Notational Velocity]]', expected: 'Notational Velocity' },
-        { position: [0, 2], text: '[[한글 Alphabet Test]]', expected: '한글 Alphabet Test' },
-        { position: [0, 2], text: '[[ Car ]]', expected: 'Car' },
-        { position: [0, 2], text: '[[Car/Mini]]', expected: 'Car/Mini' },
-      ]
+      it 'returns a trimmed interlink text', ->
+        testdata = [
+          { position: [0, 2], text: '[[Car]]', expected: 'Car' },
+          { position: [0, 2], text: '[[Notational Velocity]]', expected: 'Notational Velocity' },
+          { position: [0, 2], text: '[[한글 Alphabet Test]]', expected: '한글 Alphabet Test' },
+          { position: [0, 2], text: '[[ Car ]]', expected: 'Car' },
+          { position: [0, 2], text: '[[Car/Mini]]', expected: 'Car/Mini' },
+        ]
 
-      for testitem in testdata
-        editor.setText testitem.text
-        editor.setCursorBufferPosition testitem.position
-        expect(Interlink.getInterlinkUnderCursor(editor)).toBe testitem.expected
+        for testitem in testdata
+          editor.setText testitem.text
+          editor.setCursorBufferPosition testitem.position
+          expect(Interlink.getInterlinkUnderCursor(editor)).toBe testitem.expected
 
-    it 'returns undefined for invalid text', ->
-      testdata = [
-        { position: [0, 2], text: '[[]]' },
-        { position: [0, 3], text: '[[]]' },
-        { position: [0, 2], text: '[[   ]]' },
-        { position: [0, 1], text: '[Car]' },
-        { position: [0, 2], text: '[[[Car]]]' },
-        { position: [0, 2], text: '[[Car]' },
-        { position: [0, 2], text: '[[Car]]]' },
-        { position: [0, 1], text: 'Car' },
-      ]
+      it 'returns undefined for invalid text', ->
+        testdata = [
+          { position: [0, 2], text: '[[]]' },
+          { position: [0, 3], text: '[[]]' },
+          { position: [0, 2], text: '[[   ]]' },
+          { position: [0, 1], text: '[Car]' },
+          { position: [0, 2], text: '[[[Car]]]' },
+          { position: [0, 2], text: '[[Car]' },
+          { position: [0, 2], text: '[[Car]]]' },
+          { position: [0, 1], text: 'Car' },
+        ]
 
-      for testitem in testdata
-        editor.setText testitem.text
-        editor.setCursorBufferPosition testitem.position
+        for testitem in testdata
+          editor.setText testitem.text
+          editor.setCursorBufferPosition testitem.position
+          expect(Interlink.getInterlinkUnderCursor(editor)).toBe undefined
+
+    describe 'under a random directory', ->
+      beforeEach ->
+        waitsForPromise ->
+          atom.workspace.open(path.join(temp.mkdirSync(), 'Interlink.md')).then (o) -> editor = o
+
+      it 'does not apply the grammar', ->
+        editor.setText '[[Car]]'
+        editor.setCursorBufferPosition [0, 2]
         expect(Interlink.getInterlinkUnderCursor(editor)).toBe undefined
 
   describe 'when openInterlink is called', ->

@@ -1,14 +1,5 @@
-'name': 'nvAtom Markdown'
-'scopeName': 'source.gfm'
-'fileTypes': [
-  'markdown'
-  'md'
-  'mdown'
-  'mkd'
-  'mkdown'
-  'rmd'
-  'ron'
-]
+'name': 'nvAtom Github Markdown'
+'scopeName': 'source.gfm.nvatom'
 'patterns': [
   {
     'include': 'source.gfm'

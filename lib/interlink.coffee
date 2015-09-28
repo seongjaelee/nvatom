@@ -7,6 +7,9 @@ class Interlink
   constructor: ->
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => Interlink.openInterlink()
+    @subscriptions.add atom.workspace.observeTextEditors (editor) ->
+      if Utility.isNote(editor.getPath())
+        editor.setGrammar(atom.grammars.grammarForScopeName('source.gfm.nvatom'))
 
   destroy: ->
     @subscriptions.dispose()

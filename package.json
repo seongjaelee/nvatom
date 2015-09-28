@@ -9,12 +9,6 @@
     "Jonathan Hoyt <hoyt@github.com>"
   ],
   "description": "Notational Velocity for Atom",
-  "activationCommands": {
-    "atom-workspace": [
-      "nvatom:toggle",
-      "nvatom:openInterlink"
-    ]
-  },
   "keywords": [
     "wiki",
     "notational velocity",
