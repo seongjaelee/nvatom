@@ -19,7 +19,7 @@ describe 'Interlink', ->
   afterEach ->
     atom.config.set('nvatom.directory', defaultDirectory)
 
-  describe 'when getInerlinkUnderCursor is called', ->
+  describe 'when getInterlinkUnderCursor is called', ->
     editor = null
 
     describe 'under the note directory', ->

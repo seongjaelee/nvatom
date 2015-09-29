@@ -1,10 +1,12 @@
 fs = require 'fs-plus'
+path = require 'path'
 {CompositeDisposable} = require 'atom'
 Utility = require './utility'
 
 module.exports =
 class Interlink
   constructor: ->
+    Interlink.loadGrammarSync()
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.commands.add 'atom-workspace', 'nvatom:openInterlink': => Interlink.openInterlink()
     @subscriptions.add atom.workspace.observeTextEditors (editor) ->
@@ -13,6 +15,11 @@ class Interlink
 
   destroy: ->
     @subscriptions.dispose()
+
+  @loadGrammarSync: ->
+    unless atom.grammars.grammarForScopeName('source.gfm.nvatom')
+      grammarPath = path.join(atom.packages.resolvePackagePath('nvatom'), 'grammars', 'nvatom.cson')
+      atom.grammars.loadGrammarSync(grammarPath)
 
   @openInterlink: ->
     editor = atom.workspace.getActiveTextEditor()
