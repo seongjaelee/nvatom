@@ -25,6 +25,7 @@
     "atom-space-pen-views": "^2.0.3",
     "chokidar": "^1.0.5",
     "docquery": "^1.1.0",
+    "search-index": "^0.6.11",
     "fs-plus": "2.x",
     "underscore-plus": "^1.6.6"
   },
