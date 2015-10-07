@@ -3,6 +3,8 @@ path = require 'path'
 temp = require 'temp'
 Interlink = require '../lib/interlink'
 
+temp.track()
+
 describe 'Interlink', ->
   defaultDirectory = atom.config.get('nvatom.directory')
   noteDirectory = null

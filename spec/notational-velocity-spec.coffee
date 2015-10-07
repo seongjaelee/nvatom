@@ -1,6 +1,8 @@
 path = require 'path'
 temp = require 'temp'
 
+temp.track()
+
 describe "nvAtom", ->
   defaultDirectory = atom.config.get('nvatom.directory')
   activationPromise = null

@@ -73,8 +73,8 @@ module.exports =
   autodelete: (paneItem) ->
     return false unless paneItem?.getURI?()?
     uri = paneItem.getURI()
-    return unless Utility.isNote(uri)
-    return false unless paneItem?.isEmpty()
+    return false unless Utility.isNote(uri)
+    return false unless paneItem.isEmpty()
     fs.unlinkSync(uri)
     noteName = uri.substring(@rootDirectory.length + 1)
     atom.notifications.addInfo("Empty note #{noteName} is deleted.")
