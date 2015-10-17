@@ -59,6 +59,15 @@ You can also override `cmd-l` if you want to keep your muscle memory from Notati
   'cmd-l': 'nvatom:toggle'
 ```
 
+To set Windows and Linux key binds you can add the following lines to your keymap:
+
+```cson
+'atom-workspace':
+  'alt-ctrl-l': 'nvatom:toggle'
+'atom-workspace atom-text-editor':
+  'alt-ctrl-o': 'nvatom:openInterlink'
+```
+
 ## Migration
 
 v0.1.0 under published package name `notational-velocity` had a fatal bug that sets the default value of its note directory under package directory. In that case, all notes are deleted once the user updates the package, since package directory is overwritten when the user. For more information, refer [#25][6].
