@@ -9,6 +9,10 @@
           'label': 'Toggle'
           'command': 'nvatom:toggle'
         }
+        {
+          'label': 'Open Interlink'
+          'command': 'nvatom:openInterlink'
+        }
       ]
     ]
   }
