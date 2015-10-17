@@ -1,3 +1,6 @@
+## 0.9.0
+- Add an interlink feature
+
 ## 0.8.0
 - Add a feature to delete an empty note automatically when closing its pane
 
