@@ -10,7 +10,7 @@ class NotationalVelocityView extends SelectListView
   initialize: (state) ->
     @initializedAt = new Date()
     super
-    @addClass('nvatom from-top overlay')
+    @addClass('nvatom')
     @rootDirectory = Utility.getNoteDirectory()
     unless fs.existsSync(@rootDirectory)
       throw new Error("The given directory #{@rootDirectory} does not exist. "
