@@ -1,7 +1,5 @@
 "use babel"
-let fs = require("fs")
-
-
+let fs = require("fs-plus")
 
 var fsHelpers = {
   // Recursive folder delete.

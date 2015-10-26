@@ -2,7 +2,7 @@ path = require 'path'
 fs = require 'fs-plus'
 _ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
-DocQuery = require 'docquery'
+Documents = require './documents'
 
 module.exports =
 class NotationalVelocityView extends SelectListView
@@ -17,19 +17,17 @@ class NotationalVelocityView extends SelectListView
     @skipPopulateList = false
     @prevCursorPosition = 0
     @documentsLoaded = false
-    @docQuery = new DocQuery(@rootDirectory, {recursive: true, extensions: atom.config.get('nvatom.extensions')})
-    @docQuery.on "ready", () =>
+    @documents = new Documents(@rootDirectory, {recursive: true, extensions: atom.config.get('nvatom.extensions')})
+    @documents.on "ready", () =>
       @documentsLoaded = true
       @setLoading()
       @populateList()
-    @docQuery.on "added", (fileDetails) =>
+    @documents.on "added", (fileDetails) =>
       @populateList() if @documentsLoaded
-    @docQuery.on "updated", (fileDetails) =>
+    @documents.on "updated", (fileDetails) =>
       @populateList() if @documentsLoaded
-    @docQuery.on "removed", (fileDetails) =>
+    @documents.on "removed", (fileDetails) =>
       @populateList() if @documentsLoaded
-    unless atom.config.get('nvatom.enableLunrPipeline')
-      @docQuery.searchIndex.pipeline.reset()
 
   isCursorProceeded: ->
     editor = @filterEditorView.model
@@ -60,10 +58,12 @@ class NotationalVelocityView extends SelectListView
         n = filteredItems.indexOf(item) + 1
         @selectItemView(@list.find("li:nth-child(#{n})"))
 
+  # Returns a Promise
   filter: (filterQuery) ->
     if (filterQuery is "") or (filterQuery is undefined)
-      return @docQuery.documents
-    return @docQuery.search(filterQuery)
+      return @documents.recent()
+    else
+      return @documents.search(filterQuery)
 
   getFilterKey: ->
     'filetext'
@@ -79,13 +79,13 @@ class NotationalVelocityView extends SelectListView
       @show()
 
   viewForItem: (item) ->
-    content = item.body[0...100]
+    content = item.body
 
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
           @span "#{item.title}"
-          @div class: 'metadata', "#{item.modifiedAt.toLocaleDateString()}"
+          @div class: 'metadata', "#{new Date(item.modifiedAt).toLocaleDateString()}"
         @div class: 'secondary-line', "#{content}"
 
   confirmSelection: ->
@@ -138,22 +138,20 @@ class NotationalVelocityView extends SelectListView
 
   populateList: ->
     filterQuery = @getFilterQuery()
-    filteredItems = @filter(filterQuery)
+    @filter(filterQuery).then (filteredItems) =>
+      @list.empty()
+      if filteredItems.length
+        @setError(null)
 
-    @list.empty()
-    if filteredItems.length
-      @setError(null)
+        for i in [0...Math.min(filteredItems.length, @maxItems)]
+          item = filteredItems[i]
+          itemView = $(@viewForItem(item))
+          itemView.data('select-list-item', item)
+          @list.append(itemView)
 
-      for i in [0...Math.min(filteredItems.length, @maxItems)]
-        item = filteredItems[i]
-        itemView = $(@viewForItem(item))
-        itemView.data('select-list-item', item)
-        @list.append(itemView)
-
-      @selectItem(filteredItems, filterQuery)
-
-    else
-      @setError(@getEmptyMessage(@docQuery.documents.length, filteredItems.length))
+        @selectItem(filteredItems, filterQuery)
+      else
+        @setError(@getEmptyMessage(@documents.count, filteredItems.length))
 
   schedulePopulateList: ->
     unless @skipPopulateList

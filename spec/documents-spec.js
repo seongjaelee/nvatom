@@ -14,7 +14,7 @@ describe("Documents", ()=>{
 
   beforeEach(()=>{
     documents = new Documents(testDataPath, options)
-    documents.on("documents:loaded", ()=>{
+    documents.on("ready", ()=>{
       documentsLoaded = true
     })
 
@@ -55,7 +55,7 @@ describe("Documents", ()=>{
       })
 
       runs(()=>{
-        documents.on("documents:added", ()=>{
+        documents.on("added", ()=>{
           fileAdded = true
         })
         fs.writeFileSync(tmpFilePath, "# Foo")
@@ -78,7 +78,7 @@ describe("Documents", ()=>{
       })
 
       runs(()=>{
-        documents.on("documents:updated", ()=>{
+        documents.on("updated", ()=>{
           fileUpdated = true
         })
         fs.appendFileSync(tmpFilePath, "## Bar")
@@ -95,7 +95,7 @@ describe("Documents", ()=>{
       })
 
       runs(()=>{
-        documents.on("documents:removed", ()=>{
+        documents.on("removed", ()=>{
           fileRemoved = true
         })
         fs.unlinkSync(tmpFilePath)
@@ -119,17 +119,13 @@ describe("Documents", ()=>{
     })
   })
 
-  // describe("recent", ()=>{
-  //   it("returns documents sorted by updated timestamp", ()=>{
-  //     var recent = documents.recent()
-  //
-  //     waitsForPromise(()=>{
-  //       return recent
-  //     })
-  //
-  //     runs(()=>{
-  //       expect(recent.length).toEqual(5)
-  //     })
-  //   })
-  // })
+  describe("recent", ()=>{
+    it("returns documents sorted by updated timestamp", ()=>{
+      waitsForPromise(()=>{
+        return documents.recent().then((recentDocuments)=>{
+          expect(recentDocuments.length).toEqual(4)
+        })
+      })
+    })
+  })
 })
