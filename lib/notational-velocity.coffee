@@ -23,7 +23,11 @@ module.exports =
       description: 'Lunr pipeline preprocesses query to make search faster. However, it will skip searching some of stop words such as "an" or "be".'
       type: 'boolean'
       default: true
-
+    enableAutosave:
+      title: 'Enable Autosave'
+      description: 'Enable saving the document automatically whenever the user leaves the window or change the tab.'
+      type: 'boolean'
+      default: true
 
   activate: (state) ->
     @rootDirectory = @ensureNoteDirectory()
@@ -64,6 +68,7 @@ module.exports =
     @notationalVelocityView
 
   autosave: (paneItem) ->
+    return unless atom.config.get('nvatom.enableAutosave')
     return unless paneItem?.getURI?()?
     return unless paneItem?.isModified?()
     uri = paneItem.getURI()
@@ -81,6 +86,7 @@ module.exports =
     return true
 
   autosaveAll: ->
+    return unless atom.config.get('nvatom.enableAutosave')
     @autosave(paneItem) for paneItem in atom.workspace.getPaneItems()
 
   ensureNoteDirectory: ->
