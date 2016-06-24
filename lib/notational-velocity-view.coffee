@@ -105,9 +105,12 @@ class NotationalVelocityView extends SelectListView
     if filePath
       atom.workspace.open(filePath).then (editor) ->
         save = ->
-          atom.packages.deactivatePackage 'whitespace'
+          isWhiteSpaceActive = atom.packages.isPackageActive 'whitespace'
+          if isWhiteSpaceActive
+            atom.packages.deactivatePackage 'whitespace'
           editor.save()
-          atom.packages.activatePackage 'whitespace'
+          if isWhiteSpaceActive
+            atom.packages.activatePackage 'whitespace'
         debouncedSave = _.debounce save, 1000
         editor.onDidStopChanging () ->
           debouncedSave() if editor.isModified()
