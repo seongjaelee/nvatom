@@ -1,3 +1,7 @@
+## 0.11.0
+- Make autosave a selectable feature
+- Fix the bug that shows an error message on save when whitespace package is disabled
+
 ## 0.9.0
 - Add an interlink feature
 
