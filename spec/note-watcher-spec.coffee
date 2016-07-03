@@ -25,98 +25,98 @@ describe 'note-watcher', ->
   afterEach ->
     watcher.close()
   
-  # it 'handles a symbolic link note properly', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'update', spy
-  #   
-  #   anotherDirectoryPath = temp.mkdirSync()
-  #   fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
-  #   fs.symlinkSync(path.join(anotherDirectoryPath, 'baz.md'), path.join(directoryPath, 'baz.md'))
-  #   
-  #   waitsFor -> spy.wasCalled
-  #   
-  #   runs -> 
-  #     result = watcher.search('baz')
-  #     expect(result.length).toBe(1)
-
-  # it 'handles a symbolic link directory properly', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'update', spy
-  # 
-  #   anotherDirectoryPath = temp.mkdirSync()
-  #   fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
-  #   fs.symlinkSync(anotherDirectoryPath, path.join(directoryPath, 'baz'))
-  # 
-  #   waitsFor -> spy.wasCalled
-  #   
-  #   runs -> 
-  #     result = watcher.search('baz')
-  #     expect(result.length).toBe(1)
-  #     expect(result[0].filePath).toBe(path.join(directoryPath, 'baz', 'baz.md'))
+  it 'handles a symbolic link note properly', ->
+    spy = jasmine.createSpy()
+    watcher.on 'update', spy
+    
+    anotherDirectoryPath = temp.mkdirSync()
+    fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
+    fs.symlinkSync(path.join(anotherDirectoryPath, 'baz.md'), path.join(directoryPath, 'baz.md'))
+    
+    waitsFor -> spy.wasCalled
+    
+    runs -> 
+      result = watcher.search('baz')
+      expect(result.length).toBe(1)
   
-  # it 'handles paired symbolic links properly without falling into an infinite loop', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'update', spy
-  # 
-  #   anotherDirectoryPath = temp.mkdirSync()
-  #   fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
-  #   fs.symlinkSync(anotherDirectoryPath, path.join(directoryPath, 'bazDir'))
-  #   fs.symlinkSync(directoryPath, path.join(anotherDirectoryPath, 'fooDir'))
-  # 
-  #   waitsFor -> spy.wasCalled
-  #   
-  #   runs -> 
-  #     result = watcher.search('baz')
-  #     expect(result.length).toBe(1)
-  #     expect(result[0].filePath).toBe(path.join(directoryPath, 'bazDir', 'baz.md'))
+  it 'handles a symbolic link directory properly', ->
+    spy = jasmine.createSpy()
+    watcher.on 'update', spy
   
-  # it 'watches adding a file', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'update', spy
-  #   fs.writeFileSync(path.join(directoryPath, 'note.md'), 'hello world')
-  #   
-  #   waitsFor -> spy.wasCalled
-  # 
-  # it 'watches changing a file', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'update', spy
-  #   filePath = path.join(directoryPath, 'note.md')
-  #   fs.writeFileSync(filePath, 'hello world')
-  #   waitsFor -> spy.callCount == 1
-  #   
-  #   runs -> fs.writeFileSync(filePath, 'hello world 2')
-  #   
-  #   waitsFor -> spy.callCount == 2    
-  # 
-  # it 'watches removing a file', ->
-  #   spy = jasmine.createSpy()
-  #   watcher.on('update', spy)
-  #   filePath = path.join(directoryPath, 'note.md')
-  #   fs.writeFileSync(filePath, 'hello world')
-  #   waitsFor -> spy.callCount == 1
-  #   
-  #   runs -> fs.unlinkSync(filePath)
-  #   
-  #   waitsFor -> spy.callCount == 2
-  # 
-  # it 'searches', ->
-  #   result = watcher.search('programming')
-  #   expect(result.length).toBe(1)
-  #   expect(result[0].title).toBe('foo')
-  # 
-  # it 'saves and loads', ->
-  #   watcher.save()
-  #   watcher.close()
-  #   watcher = new NoteWatcher(directoryPath)
-  #   spy = jasmine.createSpy()
-  #   watcher.on 'ready', spy
-  # 
-  #   waitsFor -> spy.wasCalled
-  #   
-  #   runs -> 
-  #     result = watcher.search('programming')
-  #     expect(result.length).toBe(1)
-  #     expect(result[0].title).toBe('foo')
+    anotherDirectoryPath = temp.mkdirSync()
+    fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
+    fs.symlinkSync(anotherDirectoryPath, path.join(directoryPath, 'baz'))
+  
+    waitsFor -> spy.wasCalled
+    
+    runs -> 
+      result = watcher.search('baz')
+      expect(result.length).toBe(1)
+      expect(result[0].filePath).toBe(path.join(directoryPath, 'baz', 'baz.md'))
+  
+  it 'handles paired symbolic links properly without falling into an infinite loop', ->
+    spy = jasmine.createSpy()
+    watcher.on 'update', spy
+  
+    anotherDirectoryPath = temp.mkdirSync()
+    fs.writeFileSync(path.join(anotherDirectoryPath, 'baz.md'), 'A common name for the foobar, also foobaz.')
+    fs.symlinkSync(anotherDirectoryPath, path.join(directoryPath, 'bazDir'))
+    fs.symlinkSync(directoryPath, path.join(anotherDirectoryPath, 'fooDir'))
+  
+    waitsFor -> spy.wasCalled
+    
+    runs -> 
+      result = watcher.search('baz')
+      expect(result.length).toBe(1)
+      expect(result[0].filePath).toBe(path.join(directoryPath, 'bazDir', 'baz.md'))
+  
+  it 'watches adding a file', ->
+    spy = jasmine.createSpy()
+    watcher.on 'update', spy
+    fs.writeFileSync(path.join(directoryPath, 'note.md'), 'hello world')
+    
+    waitsFor -> spy.wasCalled
+  
+  it 'watches changing a file', ->
+    spy = jasmine.createSpy()
+    watcher.on 'update', spy
+    filePath = path.join(directoryPath, 'note.md')
+    fs.writeFileSync(filePath, 'hello world')
+    waitsFor -> spy.callCount == 1
+    
+    runs -> fs.writeFileSync(filePath, 'hello world 2')
+    
+    waitsFor -> spy.callCount == 2    
+  
+  it 'watches removing a file', ->
+    spy = jasmine.createSpy()
+    watcher.on('update', spy)
+    filePath = path.join(directoryPath, 'note.md')
+    fs.writeFileSync(filePath, 'hello world')
+    waitsFor -> spy.callCount == 1
+    
+    runs -> fs.unlinkSync(filePath)
+    
+    waitsFor -> spy.callCount == 2
+  
+  it 'searches', ->
+    result = watcher.search('programming')
+    expect(result.length).toBe(1)
+    expect(result[0].title).toBe('foo')
+  
+  it 'saves and loads', ->
+    watcher.save()
+    watcher.close()
+    watcher = new NoteWatcher(directoryPath)
+    spy = jasmine.createSpy()
+    watcher.on 'ready', spy
+  
+    waitsFor -> spy.wasCalled
+    
+    runs -> 
+      result = watcher.search('programming')
+      expect(result.length).toBe(1)
+      expect(result[0].title).toBe('foo')
     
   it 'loads the modified contents correctly', ->
     watcher.save()

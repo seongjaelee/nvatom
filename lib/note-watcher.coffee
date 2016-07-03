@@ -19,6 +19,7 @@ class NoteWatcher extends EventEmitter
     @_startWatcher()
 
   save: ->
+    return unless @_state == 'ready'
     cache = {
       baseDirectory: @_baseDirectory,
       extensions: @_extensions,
@@ -31,7 +32,7 @@ class NoteWatcher extends EventEmitter
       zlib.deflateSync(JSON.stringify(cache)))
   
   close: ->
-    @_watcher.close()
+    @_watcher?.close()
   
   search: (query) ->
     if query? and query.length > 0
