@@ -115,6 +115,8 @@ class NotationalVelocityView extends SelectListView
   destroy: ->
     @cancel()
     @panel?.destroy()
+    @noteWatcher.save()
+    @noteWatcher.close()
 
   show: ->
     @storeFocusedElement()
