@@ -28,8 +28,8 @@
   "dependencies": {
     "atom-space-pen-views": "^2.0.3",
     "chokidar": "^1.0.5",
-    "docquery": "^1.1.1",
     "fs-plus": "2.x",
+    "lunr": "^0.6.0",
     "underscore-plus": "^1.6.6"
   },
   "devDependencies": {
