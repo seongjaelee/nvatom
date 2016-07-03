@@ -89,24 +89,6 @@ class NoteCache
   _assert: ->
     throw new Error "cache length is wrong; #{Object.keys(@_noteCache).length} #{@_noteSortedList} #{@_maxItem}" unless Object.keys(@_noteCache).length == Math.min(@_maxItem, @_noteSortedList.length)
     throw new Error 'list length is wrong' unless @_noteSortedList.length == Object.keys(@_noteStats).length
-
-  # _buildNoteStats: ->
-  #   ret = {}
-  #   visited = [fs.absolute(@_baseDirectory)]
-  #   fs.traverseTreeSync(
-  #     @_baseDirectory,
-  #     (filePath) =>
-  #       fileName = path.basename(filePath)
-  #       if @_extensions.indexOf(path.extname(fileName)) >= 0
-  #         noteId = path.relative(@_baseDirectory, filePath)
-  #         ret[noteId] = fs.statSync(filePath).mtime.getTime()
-  #     ,
-  #     (directoryPath) =>
-  #       return false if fs.absolute(directoryPath) in visited
-  #       visited.push(fs.absolute(directoryPath))
-  #       return true
-  #   )
-  #   ret
   
   _buildNoteSortedList: ->
     @_noteSortedList = Object.keys(@_noteStats)
