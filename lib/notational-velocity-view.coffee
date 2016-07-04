@@ -2,7 +2,6 @@ path = require 'path'
 fs = require 'fs-plus'
 _ = require 'underscore-plus'
 {$, $$, SelectListView} = require 'atom-space-pen-views'
-DocQuery = require 'docquery'
 NoteWatcher = require './note-watcher'
 Utility = require './utility'
 
