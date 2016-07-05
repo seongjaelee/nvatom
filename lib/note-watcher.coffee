@@ -11,9 +11,10 @@ module.exports =
 class NoteWatcher extends EventEmitter
   @cacheVersion = 0
   
-  constructor: (@_baseDirectory, @_extensions, @_maxItems) ->
+  constructor: (@_baseDirectory, @_extensions, @_maxItems, @_enableLunrPipeline) ->
     @_maxItems = @_maxItems ? 100
     @_extensions = @_extensions ? ['.txt', '.md']
+    @_enableLunrPipeline = @_enableLunrPipeline ? false
     @_noteCache = new NoteCache(@_baseDirectory, @_maxItems)
     @_restoreSearchIndex() || @_initSearchIndex()
     @_startWatcher()
@@ -23,6 +24,7 @@ class NoteWatcher extends EventEmitter
     cache = {
       baseDirectory: @_baseDirectory,
       extensions: @_extensions,
+      enableLunrPipeline: @_enableLunrPipeline,
       version: @_cacheVersion,
       searchIndex: JSON.stringify(@_searchIndex),
       noteCache: @_noteCache.toJSON(),
@@ -51,6 +53,8 @@ class NoteWatcher extends EventEmitter
       @field('title', { boost: 10 })
       @field('body')
     )
+    if !@_enableLunrPipeline
+      @_searchIndex.pipeline.reset()
   
   _restoreSearchIndex: ->
     cacheFilePath = path.join(@_baseDirectory, 'nvatom.cache')
@@ -59,6 +63,7 @@ class NoteWatcher extends EventEmitter
     return false if cache == null
     return false unless _.isEqual(cache.baseDirectory, @_baseDirectory)
     return false unless _.isEqual(cache.extensions, @_extensions)
+    return false unless _.isEqual(cache.enableLunrPipeline, @_enableLunrPipeline)
     return false unless _.isEqual(cache.version, @_cacheVersion)
     @_searchIndex = lunr.Index.load(JSON.parse(cache.searchIndex))
     # TODO: Make this as an interface. Old note cache does not have to know upsert, remove, ready and so on.

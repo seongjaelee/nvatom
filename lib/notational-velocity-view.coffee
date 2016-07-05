@@ -18,15 +18,13 @@ class NotationalVelocityView extends SelectListView
     @skipPopulateList = false
     @prevCursorPosition = 0
     @documentsLoaded = false
-    @noteWatcher = new NoteWatcher(@rootDirectory, atom.config.get('nvatom.extensions'), @maxItems)
+    @noteWatcher = new NoteWatcher(@rootDirectory, atom.config.get('nvatom.extensions'), @maxItems, atom.config.get('nvatom.enableLunrPipeline'))
     @noteWatcher.on "ready", () =>
       @documentsLoaded = true
       @setLoading()
       @populateList()
     @noteWatcher.on "update", () => 
       @populateList() if @documentsLoaded
-    unless atom.config.get('nvatom.enableLunrPipeline')
-      @noteWatcher.searchIndex.pipeline.reset()
 
   isCursorProceeded: ->
     editor = @filterEditorView.model
@@ -74,14 +72,12 @@ class NotationalVelocityView extends SelectListView
       @show()
 
   viewForItem: (item) ->
-    content = item.body[0...100]
-
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
           @span "#{item.title}"
           @div class: 'metadata', "#{item.modifiedAt.toLocaleDateString()}"
-        @div class: 'secondary-line', "#{content}"
+        @div class: 'secondary-line', "#{item.body}"
 
   confirmSelection: ->
     item = @getSelectedItem()
