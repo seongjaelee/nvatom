@@ -17,7 +17,7 @@ class NoteWatcher extends EventEmitter
     @_enableLunrPipeline = @_enableLunrPipeline ? false
     @_noteCache = new NoteCache(@_baseDirectory, @_maxItems)
     @_restoreSearchIndex() || @_initSearchIndex()
-    @_startWatcher()
+    @_initWatcher()
 
   save: ->
     return unless @_state == 'ready'
@@ -72,7 +72,7 @@ class NoteWatcher extends EventEmitter
     @_state = 'recovering'
     return true
 
-  _startWatcher: ->
+  _initWatcher: ->
     options = {
       ignored: (filePath, fileStat) =>
         if fileStat?.isFile() then @_extensions.indexOf(path.extname(filePath)) < 0 else false
