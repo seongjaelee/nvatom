@@ -91,3 +91,4 @@ Since keymaps overlap with `notational-velocity`, follow the menu *Packages > nv
 [4]: https://travis-ci.org/seongjaelee/nvatom
 [5]: https://cloud.githubusercontent.com/assets/948301/7246990/2e2b4c6e-e7b9-11e4-93b0-57954e011e81.gif
 [6]: https://github.com/seongjaelee/nvatom/issues/25
+

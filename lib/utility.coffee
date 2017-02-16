@@ -11,7 +11,7 @@ class Utility
   @getPrimaryNoteExtension: -> if atom.config.get('nvatom.extensions').length then atom.config.get('nvatom.extensions')[0] else '.md'
 
   @isNote: (filePath) ->
-    return false unless path.extname(filePath) in atom.config.get('nvatom.extensions')
+    return false unless filePath and path.extname(filePath.toString()) in atom.config.get('nvatom.extensions')
 
     filePath = fs.normalize(filePath)
     return true if filePath.startsWith(Utility.getNoteDirectory())
