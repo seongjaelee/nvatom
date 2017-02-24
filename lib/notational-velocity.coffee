@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
+untildify = require 'untildify'
 {CompositeDisposable, Disposable} = require 'atom'
 Interlink = require './interlink'
 Utility = require './utility'
@@ -90,7 +91,7 @@ module.exports =
     @autosave(paneItem) for paneItem in atom.workspace.getPaneItems()
 
   ensureNoteDirectory: ->
-    noteDirectory = fs.normalize(atom.config.get('nvatom.directory'))
+    noteDirectory = Utility.getNoteDirectory()
     packagesDirectory = path.join(process.env.ATOM_HOME, 'packages')
     defaultNoteDirectory = path.join(packagesDirectory, 'nvatom', 'notebook')
 
@@ -100,7 +101,7 @@ module.exports =
     # Initialize note directory.
     unless fs.existsSync(noteDirectory)
       @tryMigrateFromNotationalVelocity()
-      noteDirectory = atom.config.get('nvatom.directory')
+      noteDirectory = Utility.getNoteDirectory()
       unless fs.existsSync(noteDirectory)
         fs.makeTreeSync(noteDirectory)
         fs.copySync(defaultNoteDirectory, noteDirectory)
@@ -109,13 +110,15 @@ module.exports =
 
   tryMigrateFromNotationalVelocity: ->
     prevNoteDirectory = atom.config.get('notational-velocity.directory')
-    currNoteDirectory = atom.config.get('nvatom.directory')
+    currNoteDirectory = Utility.getNoteDirectory()
     packagesDirectory = path.join(process.env.ATOM_HOME, 'packages')
     defaultNoteDirectory = path.join(packagesDirectory, 'nvatom', 'notebook')
 
     # notational-velocity does not exist.
     if prevNoteDirectory is undefined
       return
+
+    prevNoteDirectory = untildify(prevNoteDirectory)
 
     atom.notifications.addInfo('Migrating from notational-velocity package...')
 
