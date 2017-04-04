@@ -1,10 +1,5 @@
 path = require 'path'
 temp = require 'temp'
-chai = require 'chai'
-chaiAsPromised = require 'chai-as-promised'
-
-chai.use(chaiAsPromised)
-chai.should()
 
 temp.track()
 
@@ -23,7 +18,7 @@ describe "nvAtom", ->
     it "attaches and then detaches the view", ->
       noteDirectory = path.join(temp.mkdirSync())
       atom.config.set('nvatom.directory', noteDirectory)
-
+      
       waitsForPromise ->
         atom.packages.activatePackage('nvatom')
 
@@ -41,5 +36,14 @@ describe "nvAtom", ->
       noteDirectory = path.join(process.env.ATOM_HOME, 'packages', 'nvatom', 'notebook')
       atom.config.set('nvatom.directory', noteDirectory)
 
+      waitsForPromise ->
+        atom.packages.activatePackage('nvatom')
+
       runs ->
-        atom.packages.activatePackage('nvatom').should.be.rejectedWith(Error)
+        waitsForPromise ->
+          atom.packages.activatePackage('notifications')
+
+        runs ->
+          notificationContainer = workspaceElement.querySelector('atom-notifications')
+          notification = notificationContainer.querySelector('atom-notification.fatal')
+          expect(notification).toExist()

@@ -34,8 +34,6 @@
     "untildify": "^3.0.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
     "temp": "0.8.1"
   }
 }
