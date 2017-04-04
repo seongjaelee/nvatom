@@ -30,7 +30,8 @@
     "chokidar": "^1.0.5",
     "docquery": "^1.1.1",
     "fs-plus": "2.x",
-    "underscore-plus": "^1.6.6"
+    "underscore-plus": "^1.6.6",
+    "untildify": "^3.0.2"
   },
   "devDependencies": {
     "temp": "0.8.1"
