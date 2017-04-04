@@ -1,13 +1,12 @@
 path = require 'path'
 fs = require 'fs-plus'
-untildify = require 'untildify'
 
 module.exports =
 class Utility
 
   @getNotePath: (title) -> path.join(Utility.getNoteDirectory(), Utility.trim(title) + Utility.getPrimaryNoteExtension())
 
-  @getNoteDirectory: -> fs.normalize(untildify(atom.config.get('nvatom.directory')))
+  @getNoteDirectory: -> fs.normalize(atom.config.get('nvatom.directory'))
 
   @getPrimaryNoteExtension: -> if atom.config.get('nvatom.extensions').length then atom.config.get('nvatom.extensions')[0] else '.md'
 
